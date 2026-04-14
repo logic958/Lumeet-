@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>Connectly · Modern Dating</title>
+  <!-- Tailwind + Font Awesome + Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- Custom Swipe & Chat Sim -->
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body {
+      transition: background 0.2s, color 0.2s;
+      overflow-x: hidden;
+    }
+    .dark body {
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+    .card-swipe {
+      transition: transform 0.3s ease, opacity 0.2s;
+      cursor: grab;
+    }
+    .card-swipe:active { cursor: grabbing; }
+    .swipe-left { transform: translateX(-120%) rotate(-12deg); opacity: 0; }
+    .swipe-right { transform: translateX(120%) rotate(12deg); opacity: 0; }
+    .online-dot {
+      width: 10px; height: 10px; background-color: #10b981;
+      border-radius: 50%; display: inline-block;
+    }
+    .typing-indicator span {
+      background: #9ca3af;
+      border-radius: 50%;
+      display: inline-block;
+      width: 6px; height: 6px;
+      animation: blink 1.4s infinite both;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink {
+      0%, 80%, 100% { opacity: 0.2; transform: scale(0.8);}
+      40% { opacity: 1; transform: scale(1);}
+    }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .message-bubble {
+      max-width: 75%;
+      word-wrap: break-word;
+    }
+    .transition-all-smooth { transition: all 0.2s ease; }
+    .swipe-container { touch-action: pan-y pinch-zoom; }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+
+  <!-- AUTH MODAL / MAIN CONTAINER -->
+  <div id="authContainer" class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full p-6">
+      <div class="text-center mb-6">
+        <i class="fas fa-heart text-4xl text-pink-500"></i>
+        <h1 class="text-3xl font-bold mt-2">Connectly</h1>
+        <p class="text-gray-500 dark:text-gray-400">Find your spark</p>
+      </div>
+      <!-- Login / Register Tabs -->
+      <div class="flex gap-2 mb-5 border-b dark:border-gray-700">
+        <button id="loginTabBtn" class="flex-1 py-2 font-semibold text-pink-500 border-b-2 border-pink-500">Login</button>
+        <button id="registerTabBtn" class="flex-1 py-2 font-semibold text-gray-500">Register</button>
+      </div>
+      <!-- Login Form -->
+      <div id="loginForm">
+        <input type="text" id="loginEmail" placeholder="Email / Phone" class="w-full p-3 border rounded-xl mb-3 dark:bg-gray-700 dark:border-gray-600">
+        <input type="password" id="loginPassword" placeholder="Password" class="w-full p-3 border rounded-xl mb-4 dark:bg-gray-700">
+        <button id="doLoginBtn" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 rounded-xl transition">Sign In</button>
+        <p class="text-center text-sm mt-4 text-gray-500">Demo: admin@connectly.com / admin123<br>or user1@demo.com / 123456</p>
+      </div>
+      <!-- Register Form (hidden) -->
+      <div id="registerForm" class="hidden">
+        <input type="text" id="regName" placeholder="Full name" class="w-full p-3 border rounded-xl mb-3 dark:bg-gray-700">
+        <input type="email" id="regEmail" placeholder="Email" class="w-full p-3 border rounded-xl mb-3">
+        <input type="password" id="regPassword" placeholder="Password" class="w-full p-3 border rounded-xl mb-3">
+        <input type="number" id="regAge" placeholder="Age" class="w-full p-3 border rounded-xl mb-3">
+        <select id="regGender" class="w-full p-3 border rounded-xl mb-3">
+          <option value="female">Female</option><option value="male">Male</option><option value="non-binary">Non-binary</option>
+        </select>
+        <input type="text" id="regLocation" placeholder="City" class="w-full p-3 border rounded-xl mb-3">
+        <button id="doRegisterBtn" class="w-full bg-pink-500 text-white font-bold py-3 rounded-xl">Create Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP (hidden until login) -->
+  <div id="appContainer" class="hidden max-w-lg mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen relative pb-20">
+    <!-- Top bar with theme toggle & logout -->
+    <div class="flex justify-between items-center p-4 bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-10">
+      <h2 class="text-xl font-bold"><i class="fas fa-heart text-pink-500"></i> Connectly</h2>
+      <div class="flex gap-3">
+        <button id="themeToggle" class="text-xl"><i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:inline"></i></button>
+        <button id="logoutBtn" class="text-sm bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-full"><i class="fas fa-sign-out-alt"></i></button>
+      </div>
+    </div>
+    <!-- Bottom Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-white dark:bg-gray-800 border-t dark:border-gray-700 flex justify-around py-2 z-20">
+      <button data-nav="discover" class="nav-btn text-2xl text-gray-500 dark:text-gray-400"><i class="fas fa-compass"></i></button>
+      <button data-nav="matches" class="nav-btn text-2xl"><i class="fas fa-heart"></i></button>
+      <button data-nav="messages" class="nav-btn text-2xl"><i class="fas fa-comment-dots"></i></button>
+      <button data-nav="profile" class="nav-btn text-2xl"><i class="fas fa-user"></i></button>
+      <button data-nav="premium" class="nav-btn text-2xl"><i class="fas fa-crown"></i></button>
+      <button data-nav="admin" id="adminNavBtn" class="nav-btn text-2xl hidden"><i class="fas fa-shield-alt"></i></button>
+    </div>
+
+    <!-- Pages -->
+    <div id="discoverPage" class="p-3 active-page"></div>
+    <div id="matchesPage" class="p-3 hidden"></div>
+    <div id="messagesPage" class="p-3 hidden"></div>
+    <div id="profilePage" class="p-3 hidden"></div>
+    <div id="premiumPage" class="p-3 hidden"></div>
+    <div id="adminPage" class="p-3 hidden"></div>
+  </div>
+
+  <script>
+    // ---------- DATA MODEL ----------
+    let currentUser = null;
+    let users = []; let swipes = []; let matches = []; let messages = []; let reports = [];
+    const STORAGE_KEYS = { users: 'connectly_users', swipes: 'connectly_swipes', matches: 'connectly_matches', messages: 'connectly_messages', reports: 'connectly_reports' };
+
+    function initMockData() {
+      if(!localStorage.getItem(STORAGE_KEYS.users)){
+        const defaultUsers = [
+          { id: 'u1', email: 'admin@connectly.com', password: btoa('admin123'), name: 'Admin', bio: 'Platform admin', age: 28, gender: 'male', preferences: 'female', interests: ['Tech','Admin'], location: 'NYC', photos: ['https://randomuser.me/api/portraits/men/1.jpg'], isVerified: true, isPremium: true, isAdmin: true, isBanned: false, isBoosted: false, likesReceived: [], swipesGiven: [], matches: [], blockedUsers: [], privacySettings: { hideProfile: false, visibility: 'public' }, onlineStatus: true, lastActive: Date.now(), verificationRequest: false },
+          { id: 'u2', email: 'emma@demo.com', password: btoa('123456'), name: 'Emma', bio: 'Love travel & hiking', age: 24, gender: 'female', preferences: 'male', interests: ['Travel','Music','Fitness'], location: 'Austin', photos: ['https://randomuser.me/api/portraits/women/2.jpg'], isVerified: false, isPremium: false, isAdmin: false, isBanned: false, isBoosted: false, likesReceived: [], swipesGiven: [], matches: [], blockedUsers: [], privacySettings: { hideProfile: false, visibility: 'public' }, onlineStatus: true, lastActive: Date.now() },
+          { id: 'u3', email: 'james@demo.com', password: btoa('123456'), name: 'James', bio: 'Chef & foodie', age: 27, gender: 'male', preferences: 'female', interests: ['Cooking','Movies','Travel'], location: 'LA', photos: ['https://randomuser.me/api/portraits/men/3.jpg'], isVerified: false, isPremium: false, isAdmin: false, isBanned: false, isBoosted: false, likesReceived: [], swipesGiven: [], matches: [], blockedUsers: [], privacySettings: {}, onlineStatus: true, lastActive: Date.now() },
+          { id: 'u4', email: 'sophia@demo.com', password: btoa('123456'), name: 'Sophia', bio: 'Artist & reader', age: 26, gender: 'female', preferences: 'male', interests: ['Art','Reading','Music'], location: 'Chicago', photos: ['https://randomuser.me/api/portraits/women/3.jpg'], isVerified: false, isPremium: false, isAdmin: false, isBanned: false, isBoosted: false, likesReceived: [], swipesGiven: [], matches: [], blockedUsers: [], privacySettings: {}, onlineStatus: false, lastActive: Date.now() - 3600000 }
+        ];
+        localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(defaultUsers));
+        localStorage.setItem(STORAGE_KEYS.swipes, JSON.stringify([]));
+        localStorage.setItem(STORAGE_KEYS.matches, JSON.stringify([]));
+        localStorage.setItem(STORAGE_KEYS.messages, JSON.stringify([]));
+        localStorage.setItem(STORAGE_KEYS.reports, JSON.stringify([]));
+      }
+    }
+
+    function loadData(){
+      users = JSON.parse(localStorage.getItem(STORAGE_KEYS.users));
+      swipes = JSON.parse(localStorage.getItem(STORAGE_KEYS.swipes));
+      matches = JSON.parse(localStorage.getItem(STORAGE_KEYS.matches));
+      messages = JSON.parse(localStorage.getItem(STORAGE_KEYS.messages));
+      reports = JSON.parse(localStorage.getItem(STORAGE_KEYS.reports));
+    }
+    function saveData(){
+      localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users));
+      localStorage.setItem(STORAGE_KEYS.swipes, JSON.stringify(swipes));
+      localStorage.setItem(STORAGE_KEYS.matches, JSON.stringify(matches));
+      localStorage.setItem(STORAGE_KEYS.messages, JSON.stringify(messages));
+      localStorage.setItem(STORAGE_KEYS.reports, JSON.stringify(reports));
+    }
+
+    // Helper: find user
+    function findUserById(uid){ return users.find(u=>u.id===uid); }
+
+    // Matching algorithm (compatibility)
+    function getCompatibility(userA, userB){
+      if(userA.id === userB.id) return 0;
+      if(userA.blockedUsers.includes(userB.id)) return -1;
+      if(userB.blockedUsers.includes(userA.id)) return -1;
+      let common = userA.interests.filter(i=>userB.interests.includes(i)).length;
+      let ageDiff = Math.abs(userA.age - userB.age);
+      let score = common * 20 - ageDiff * 2 + (userA.preferences === userB.gender ? 30 : 0);
+      return Math.max(0, Math.min(100, score));
+    }
+
+    // Get discover candidates (excluding already swiped, matched, blocked)
+    function getDiscoverUsers(){
+      let swipedUserIds = swipes.filter(s=>s.fromUserId===currentUser.id).map(s=>s.toUserId);
+      let matchedIds = matches.filter(m=>m.users.includes(currentUser.id)).flatMap(m=>m.users).filter(id=>id!==currentUser.id);
+      let blockedIds = currentUser.blockedUsers;
+      let candidates = users.filter(u=> u.id !== currentUser.id && !swipedUserIds.includes(u.id) && !matchedIds.includes(u.id) && !blockedIds.includes(u.id) && !u.isBanned && (currentUser.privacySettings?.hideProfile ? false : true) && (u.privacySettings?.visibility !== 'private' || u.id === currentUser.id));
+      // boost premium: higher order
+      candidates.sort((a,b)=> (b.isBoosted?100:0) + getCompatibility(currentUser,b) - ((a.isBoosted?100:0)+getCompatibility(currentUser,a)));
+      return candidates;
+    }
+
+    // Swipe action
+    function handleSwipe(toUserId, direction){
+      const swipedUser = findUserById(toUserId);
+      if(!swipedUser) return false;
+      const existingSwipe = swipes.find(s=> s.fromUserId===currentUser.id && s.toUserId===toUserId);
+      if(existingSwipe) return false;
+      // premium unlimited check
+      const todaySwipes = swipes.filter(s=> s.fromUserId===currentUser.id && new Date(s.timestamp).toDateString() === new Date().toDateString()).length;
+      if(!currentUser.isPremium && todaySwipes >= 10){ alert("Free limit: 10 swipes/day. Upgrade to Premium!"); return false; }
+      swipes.push({ fromUserId: currentUser.id, toUserId, direction, timestamp: Date.now() });
+      if(direction === 'like'){
+        // check mutual like
+        const mutual = swipes.find(s=> s.fromUserId===toUserId && s.toUserId===currentUser.id && s.direction==='like');
+        if(mutual){
+          const matchId = `m_${Date.now()}`;
+          matches.push({ id: matchId, users: [currentUser.id, toUserId], createdAt: Date.now(), lastMessage: '' });
+          saveData();
+          alert(`It's a match! You can now chat with ${swipedUser.name}`);
+          renderCurrentPage();
+          return true;
+        }
+      }
+      saveData();
+      renderCurrentPage();
+      return true;
+    }
+
+    // Messaging
+    function sendMessage(matchId, text, imageUrl=null){
+      const match = matches.find(m=>m.id === matchId);
+      if(!match) return;
+      const receiverId = match.users.find(id=>id !== currentUser.id);
+      const newMsg = { id: Date.now(), matchId, fromUserId: currentUser.id, toUserId: receiverId, text, image: imageUrl, timestamp: Date.now(), read: false };
+      messages.push(newMsg);
+      match.lastMessage = text;
+      saveData();
+      renderMessagesPage(matchId);
+    }
+    function getMatchChat(matchId){
+      return messages.filter(m=>m.matchId === matchId).sort((a,b)=>a.timestamp-b.timestamp);
+    }
+
+    // Admin functions
+    function banUser(adminUser, userId){
+      if(!adminUser.isAdmin) return;
+      const user = findUserById(userId);
+      if(user){ user.isBanned = true; saveData(); renderAdminDashboard(); }
+    }
+    function verifyUser(adminUser, userId){
+      if(!adminUser.isAdmin) return;
+      const user = findUserById(userId);
+      if(user){ user.isVerified = true; saveData(); renderAdminDashboard(); }
+    }
+    // Report user
+    function reportUser(reporterId, reportedId, reason){
+      reports.push({ id: Date.now(), reporterId, reportedId, reason, timestamp: Date.now(), resolved: false });
+      saveData();
+      alert("Report submitted. Admin will review.");
+    }
+
+    // UI Rendering Dispatch
+    function renderCurrentPage(){
+      const active = document.querySelector('.active-page')?.id;
+      if(active === 'discoverPage') renderDiscover();
+      else if(active === 'matchesPage') renderMatches();
+      else if(active === 'messagesPage') renderMessagesPage();
+      else if(active === 'profilePage') renderProfile();
+      else if(active === 'premiumPage') renderPremium();
+      else if(active === 'adminPage') renderAdminDashboard();
+    }
+
+    function renderDiscover(){
+      const container = document.getElementById('discoverPage');
+      let candidates = getDiscoverUsers();
+      if(candidates.length===0){ container.innerHTML=`<div class="text-center p-10">✨ No more profiles nearby. Check later!</div>`; return; }
+      let idx=0;
+      const renderCard = (user) => {
+        if(!user) return;
+        container.innerHTML = `
+          <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transition-all-smooth card-swipe" id="swipeCard">
+            <img src="${user.photos[0] || 'https://via.placeholder.com/400'}" class="w-full h-80 object-cover">
+            <div class="p-4">
+              <div class="flex items-center gap-2"><h3 class="text-2xl font-bold">${user.name}, ${user.age}</h3> ${user.isVerified ? '<i class="fas fa-check-circle text-blue-500"></i>' : ''}</div>
+              <p class="text-gray-600 dark:text-gray-300 mt-1"><i class="fas fa-map-marker-alt"></i> ${user.location}</p>
+              <p class="mt-2">${user.bio}</p>
+              <div class="flex flex-wrap gap-1 mt-2">${user.interests.map(i=>`<span class="bg-pink-100 dark:bg-pink-900 text-pink-700 text-xs px-2 py-1 rounded-full">${i}</span>`).join('')}</div>
+            </div>
+            <div class="flex justify-around p-4 border-t dark:border-gray-700">
+              <button id="swipeLeftBtn" class="bg-red-500 text-white p-4 rounded-full shadow-lg"><i class="fas fa-times text-2xl"></i></button>
+              <button id="swipeRightBtn" class="bg-green-500 text-white p-4 rounded-full shadow-lg"><i class="fas fa-heart text-2xl"></i></button>
+            </div>
+          </div>
+        `;
+        const card = document.getElementById('swipeCard');
+        let startX = 0, currentX = 0;
+        card.addEventListener('touchstart', (e)=>{ startX = e.touches[0].clientX; });
+        card.addEventListener('touchmove', (e)=>{ currentX = e.touches[0].clientX; let diff = currentX - startX; card.style.transform = `translateX(${diff}px) rotate(${diff*0.05}deg)`; });
+        card.addEventListener('touchend', (e)=>{
+          let diff = currentX - startX;
+          if(diff > 80) { finishSwipe('right', user); }
+          else if(diff < -80) { finishSwipe('left', user); }
+          else { card.style.transform = ''; }
+          startX=0; currentX=0;
+        });
+        document.getElementById('swipeLeftBtn')?.addEventListener('click',()=>finishSwipe('left',user));
+        document.getElementById('swipeRightBtn')?.addEventListener('click',()=>finishSwipe('right',user));
+      };
+      const finishSwipe = (dir, user) => {
+        handleSwipe(user.id, dir === 'right' ? 'like' : 'dislike');
+      };
+      if(candidates[0]) renderCard(candidates[0]);
+    }
+
+    function renderMatches(){
+      const myMatches = matches.filter(m=>m.users.includes(currentUser.id));
+      const container = document.getElementById('matchesPage');
+      if(myMatches.length===0){ container.innerHTML=`<div class="text-center p-8">No matches yet. Keep swiping!</div>`; return; }
+      container.innerHTML = `<div class="grid gap-4">${myMatches.map(match=>{
+        const otherId = match.users.find(id=>id!==currentUser.id);
+        const other = findUserById(otherId);
+        return `<div class="bg-white dark:bg-gray-800 rounded-xl p-3 flex items-center gap-3 shadow cursor-pointer" data-matchid="${match.id}">
+          <img src="${other.photos[0]}" class="w-16 h-16 rounded-full object-cover">
+          <div><h3 class="font-bold">${other.name}, ${other.age}</h3><p class="text-sm text-gray-500">${match.lastMessage || 'Say hi!'}</p></div>
+        </div>`;
+      }).join('')}</div>`;
+      document.querySelectorAll('[data-matchid]').forEach(el=>{
+        el.addEventListener('click',()=>{ showMessagesForMatch(el.dataset.matchid); });
+      });
+    }
+    function showMessagesForMatch(matchId){
+      document.getElementById('messagesPage').classList.remove('hidden');
+      document.getElementById('matchesPage').classList.add('hidden');
+      document.getElementById('discoverPage')?.classList.add('hidden');
+      document.getElementById('profilePage')?.classList.add('hidden');
+      document.getElementById('premiumPage')?.classList.add('hidden');
+      document.getElementById('adminPage')?.classList.add('hidden');
+      document.getElementById('messagesPage').classList.add('active-page');
+      renderMessagesPage(matchId);
+    }
+    function renderMessagesPage(matchId=null){
+      const container = document.getElementById('messagesPage');
+      const userMatches = matches.filter(m=>m.users.includes(currentUser.id));
+      if(!matchId && userMatches.length) matchId = userMatches[0]?.id;
+      const selectedMatch = matches.find(m=>m.id===matchId);
+      const otherUser = selectedMatch ? findUserById(selectedMatch.users.find(id=>id!==currentUser.id)) : null;
+      let chatHtml = `<div class="flex flex-col h-[70vh]"><div class="mb-2 flex items-center gap-2 border-b pb-2"><i class="fas fa-arrow-left cursor-pointer" id="backMatches"></i><img src="${otherUser?.photos[0]}" class="w-10 h-10 rounded-full"><span class="font-bold">${otherUser?.name}</span></div><div class="flex-1 overflow-y-auto p-2 space-y-2" id="chatMsgs"></div><div class="flex gap-2 mt-2"><input id="msgInput" placeholder="Message..." class="flex-1 border rounded-full px-4 py-2 dark:bg-gray-800"><button id="sendMsgBtn" class="bg-pink-500 px-4 rounded-full"><i class="fas fa-paper-plane"></i></button></div></div>`;
+      container.innerHTML = chatHtml;
+      document.getElementById('backMatches')?.addEventListener('click',()=>{ navigateTo('matches'); renderMatches(); });
+      const refreshMessages = ()=>{
+        if(!selectedMatch) return;
+        const msgs = getMatchChat(selectedMatch.id);
+        const msgDiv = document.getElementById('chatMsgs');
+        if(msgDiv) msgDiv.innerHTML = msgs.map(m=>`<div class="flex ${m.fromUserId===currentUser.id ? 'justify-end' : 'justify-start'}"><div class="message-bubble p-2 rounded-2xl ${m.fromUserId===currentUser.id ? 'bg-pink-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}">${m.text || (m.image?`<img src="${m.image}" class="max-w-32 rounded">`:'')}<div class="text-xs opacity-70">${new Date(m.timestamp).toLocaleTimeString()}</div></div></div>`).join('');
+        msgDiv?.scrollTo(0, msgDiv.scrollHeight);
+      };
+      refreshMessages();
+      document.getElementById('sendMsgBtn')?.addEventListener('click',()=>{
+        const inp = document.getElementById('msgInput');
+        if(inp.value.trim() && selectedMatch) sendMessage(selectedMatch.id, inp.value);
+        inp.value='';
+        refreshMessages();
+      });
+      const interval = setInterval(()=>{ if(document.getElementById('messagesPage').classList.contains('hidden')) clearInterval(interval); else refreshMessages(); }, 1500);
+    }
+    function renderProfile(){
+      const container = document.getElementById('profilePage');
+      container.innerHTML = `<div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow">
+        <div class="flex flex-col items-center"><img src="${currentUser.photos[0] || 'https://via.placeholder.com/100'}" class="w-28 h-28 rounded-full object-cover border-4 border-pink-300"><button id="editPhotoBtn" class="text-sm mt-1 text-pink-500">Change Photo</button><h2 class="text-2xl font-bold mt-2">${currentUser.name}, ${currentUser.age}</h2>${currentUser.isVerified ? '<span class="text-blue-500"><i class="fas fa-check-circle"></i> Verified</span>' : ''}<p class="text-gray-500">${currentUser.bio}</p></div>
+        <div class="mt-4"><label>Bio</label><input id="editBio" class="w-full border rounded p-2" value="${currentUser.bio}"></div>
+        <div class="mt-2"><label>Interests (comma)</label><input id="editInterests" value="${currentUser.interests.join(',')}" class="w-full border rounded p-2"></div>
+        <button id="saveProfileBtn" class="mt-4 w-full bg-pink-500 py-2 rounded text-white">Save Changes</button>
+        <hr class="my-4"><div class="text-sm"><button id="reportSupportBtn" class="text-red-500"><i class="fas fa-flag"></i> Report a user</button> | <button id="privacySettingsBtn" class="text-gray-500">Privacy Settings</button></div>
+      </div>`;
+      document.getElementById('saveProfileBtn')?.addEventListener('click',()=>{
+        currentUser.bio = document.getElementById('editBio').value;
+        currentUser.interests = document.getElementById('editInterests').value.split(',').map(s=>s.trim());
+        saveData(); alert("Profile updated!");
+      });
+      document.getElementById('editPhotoBtn')?.addEventListener('click',()=>{ let url=prompt("Enter image URL"); if(url) currentUser.photos=[url]; saveData(); renderProfile(); });
+      document.getElementById('privacySettingsBtn')?.addEventListener('click',()=>{ let hide = confirm("Hide profile from discovery?"); currentUser.privacySettings = { hideProfile: hide, visibility: hide?'private':'public' }; saveData(); alert("Updated"); });
+    }
+    function renderPremium(){
+      const container = document.getElementById('premiumPage');
+      const seeLikes = () => { let likedBy = swipes.filter(s=>s.toUserId===currentUser.id && s.direction==='like').map(s=>findUserById(s.fromUserId)).filter(u=>u); alert(likedBy.map(u=>u.name).join(', ') || "No one liked you yet"); };
+      container.innerHTML = `<div class="bg-gradient-to-r from-pink-500 to-orange-400 p-6 rounded-2xl text-white text-center"><i class="fas fa-crown text-4xl"></i><h2 class="text-2xl font-bold">Premium Access</h2><p>Unlock all features</p></div>
+      <div class="mt-4 space-y-3"><div class="flex justify-between p-3 bg-white dark:bg-gray-800 rounded-xl"><span>Verified Badge</span><button id="buyVerification" class="bg-pink-500 px-3 rounded">${currentUser.isVerified ? '✅ Active' : 'Get ($9.99)'}</button></div>
+      <div class="flex justify-between p-3 bg-white dark:bg-gray-800 rounded-xl"><span>Boost Profile</span><button id="boostBtn" class="bg-pink-500 px-3 rounded">${currentUser.isBoosted ? 'Active' : 'Boost ($4.99)'}</button></div>
+      <div class="flex justify-between p-3 bg-white dark:bg-gray-800 rounded-xl"><span>See who liked you</span><button id="seeLikesBtn" class="bg-pink-500 px-3 rounded">View</button></div>
+      <div class="flex justify-between p-3 bg-white dark:bg-gray-800 rounded-xl"><span>Unlimited Swipes</span><span>${currentUser.isPremium ? 'Active' : 'Upgrade'}</span></div>
+      <button id="buyPremiumBtn" class="w-full bg-yellow-500 py-3 rounded-xl font-bold mt-2">Upgrade to Premium ($19.99/mo)</button></div>`;
+      document.getElementById('buyVerification')?.addEventListener('click',()=>{ if(confirm("Purchase verification badge?")){ currentUser.isVerified=true; currentUser.isPremium=true; saveData(); renderPremium(); } });
+      document.getElementById('boostBtn')?.addEventListener('click',()=>{ if(confirm("Boost your profile?")){ currentUser.isBoosted=true; saveData(); renderPremium(); } });
+      document.getElementById('seeLikesBtn')?.addEventListener('click',seeLikes);
+      document.getElementById('buyPremiumBtn')?.addEventListener('click',()=>{ if(confirm("Subscribe Premium")){ currentUser.isPremium=true; saveData(); renderPremium(); } });
+    }
+    function renderAdminDashboard(){
+      if(!currentUser.isAdmin){ document.getElementById('adminNavBtn').classList.add('hidden'); return; }
+      document.getElementById('adminNavBtn').classList.remove('hidden');
+      const container = document.getElementById('adminPage');
+      const activeUsers = users.filter(u=>Date.now()-u.lastActive < 60000).length;
+      const totalMatches = matches.length;
+      const premiumRevenue = users.filter(u=>u.isPremium).length * 19.99;
+      container.innerHTML = `<div class="bg-white dark:bg-gray-800 p-4 rounded-xl mb-3"><h3 class="font-bold">Analytics</h3><p>Active: ${activeUsers} | Matches: ${totalMatches} | Revenue: $${premiumRevenue}</p></div>
+      <h3 class="font-bold">Manage Users</h3><div class="space-y-2 max-h-96 overflow-auto">${users.map(u=>`<div class="flex justify-between items-center bg-white dark:bg-gray-800 p-2 rounded"><span>${u.name} ${u.isBanned?'[BANNED]':''}</span><div><button class="banUserBtn text-red-500" data-id="${u.id}">Ban</button> <button class="verifyUserBtn text-green-500" data-id="${u.id}">Verify</button></div></div>`).join('')}</div>
+      <h3 class="font-bold mt-3">Reports</h3>${reports.filter(r=>!r.resolved).map(r=>`<div class="bg-white p-2 rounded"><b>${findUserById(r.reporterId)?.name}</b> reported ${findUserById(r.reportedId)?.name}: ${r.reason}<button data-report="${r.id}" class="resolveReportBtn text-sm bg-gray-300 px-2 rounded">Resolve</button></div>`).join('') || '<p>No reports</p>'}`;
+      document.querySelectorAll('.banUserBtn').forEach(btn=>btn.addEventListener('click',()=>banUser(currentUser, btn.dataset.id)));
+      document.querySelectorAll('.verifyUserBtn').forEach(btn=>btn.addEventListener('click',()=>verifyUser(currentUser, btn.dataset.id)));
+      document.querySelectorAll('.resolveReportBtn').forEach(btn=>btn.addEventListener('click',()=>{ let rep=reports.find(r=>r.id==btn.dataset.report); if(rep) rep.resolved=true; saveData(); renderAdminDashboard(); }));
+    }
+
+    function navigateTo(pageId){
+      ['discoverPage','matchesPage','messagesPage','profilePage','premiumPage','adminPage'].forEach(id=>{
+        const el = document.getElementById(id);
+        if(id===pageId){ el.classList.remove('hidden'); el.classList.add('active-page'); } else { el.classList.add('hidden'); el.classList.remove('active-page'); }
+      });
+      renderCurrentPage();
+    }
+
+    // Auth & app start
+    function login(email, pwd){
+      loadData();
+      const user = users.find(u=>u.email===email && atob(u.password)===pwd);
+      if(user && !user.isBanned){ currentUser=user; currentUser.onlineStatus=true; currentUser.lastActive=Date.now(); saveData(); document.getElementById('authContainer').classList.add('hidden'); document.getElementById('appContainer').classList.remove('hidden'); navigateTo('discoverPage'); renderProfile(); if(currentUser.isAdmin) renderAdminDashboard(); else document.getElementById('adminNavBtn').classList.add('hidden'); } else alert("Invalid or banned account");
+    }
+    function register(name, email, pwd, age, gender, location){
+      loadData();
+      if(users.find(u=>u.email===email)) return alert("Email exists");
+      const newUser = { id: 'u'+Date.now(), email, password: btoa(pwd), name, bio: 'New here!', age: parseInt(age), gender, preferences: gender==='male'?'female':'male', interests: [], location, photos: ['https://randomuser.me/api/portraits/lego/1.jpg'], isVerified: false, isPremium: false, isAdmin: false, isBanned: false, isBoosted: false, likesReceived: [], swipesGiven: [], matches: [], blockedUsers: [], privacySettings: { hideProfile: false, visibility: 'public' }, onlineStatus: true, lastActive: Date.now() };
+      users.push(newUser); saveData(); login(email, pwd);
+    }
+    window.onload = ()=>{ initMockData(); loadData(); document.getElementById('doLoginBtn').onclick=()=>login(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); document.getElementById('doRegisterBtn').onclick=()=>register(document.getElementById('regName').value, document.getElementById('regEmail').value, document.getElementById('regPassword').value, document.getElementById('regAge').value, document.getElementById('regGender').value, document.getElementById('regLocation').value); document.getElementById('loginTabBtn').onclick=()=>{ document.getElementById('loginForm').style.display='block'; document.getElementById('registerForm').classList.add('hidden'); }; document.getElementById('registerTabBtn').onclick=()=>{ document.getElementById('loginForm').style.display='none'; document.getElementById('registerForm').classList.remove('hidden'); }; document.getElementById('logoutBtn').onclick=()=>{ currentUser=null; document.getElementById('appContainer').classList.add('hidden'); document.getElementById('authContainer').classList.remove('hidden'); }; document.getElementById('themeToggle').onclick=()=>document.documentElement.classList.toggle('dark'); document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',(e)=>{ let page = e.currentTarget.dataset.nav; if(page==='admin' && !currentUser?.isAdmin) return; navigateTo(page+'Page'); })); };
+  </script>
+</body>
+</html>
