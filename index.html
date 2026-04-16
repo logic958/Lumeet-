@@ -173,7 +173,7 @@
 <script type="module">
     // ========== FIREBASE IMPORTS ==========
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup, sendEmailVerification, updateEmail, updatePassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup, sendEmailVerification, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, getDocs, updateDoc, collection, addDoc, query, orderBy, onSnapshot, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
@@ -194,13 +194,18 @@
     const googleProvider = new GoogleAuthProvider();
     googleProvider.setCustomParameters({ prompt: 'select_account' });
 
-    // ========== ONLINE STATUS HELPERS ==========
-    async function setUserOnline(uid, isOnline) {
-        await updateDoc(doc(db, "users", uid), { online: isOnline, lastSeen: Date.now() });
+    // ========== ONLINE STATUS USING LAST SEEN (HEARTBEAT) ==========
+    let heartbeatInterval = null;
+
+    function isUserOnline(user, privacyOnlineStatus = true) {
+        if (privacyOnlineStatus === false) return false;
+        const now = Date.now();
+        const lastSeen = user.lastSeen || 0;
+        return (now - lastSeen) < 60000; // within last 60 seconds
     }
 
-    function formatLastSeen(timestamp) {
-        if (!timestamp) return "Offline";
+    function formatLastSeen(timestamp, privacyLastSeen = true) {
+        if (!timestamp || privacyLastSeen === false) return "Offline";
         const diff = Date.now() - timestamp;
         const minutes = Math.floor(diff / 60000);
         if (minutes < 1) return "Online now";
@@ -209,6 +214,23 @@
         if (hours < 24) return `Last seen ${hours} hour${hours === 1 ? '' : 's'} ago`;
         const days = Math.floor(hours / 24);
         return `Last seen ${days} day${days === 1 ? '' : 's'} ago`;
+    }
+
+    async function updateLastSeen(uid) {
+        if (!uid) return;
+        await updateDoc(doc(db, "users", uid), { lastSeen: Date.now() });
+    }
+
+    function startHeartbeat(uid) {
+        if (heartbeatInterval) clearInterval(heartbeatInterval);
+        heartbeatInterval = setInterval(() => {
+            if (uid && currentUser) updateLastSeen(uid);
+        }, 30000);
+    }
+
+    async function setUserOffline(uid) {
+        if (!uid) return;
+        await updateDoc(doc(db, "users", uid), { lastSeen: 0 }); // mark offline
     }
 
     // ========== PREMIUM HELPER FUNCTIONS ==========
@@ -241,7 +263,6 @@
                 premiumPlan: "free",
                 features: { unlimitedSwipes: false, readReceipts: false, seeWhoLikedYou: false, boost: false }
             });
-            console.log("Premium expired for user", userId);
             return false;
         }
         return userData.isPremium;
@@ -324,11 +345,11 @@
         currentUser.privacyOnlineStatus = onlineStatusVisible;
         renderChatList();
         renderProfileUI();
-        // If the user turned off online status, immediately set online false in Firestore
+        // If user turned off online status, immediately set lastSeen to 0 to appear offline
         if (!onlineStatusVisible) {
-            await setUserOnline(currentUser.uid, false);
+            await setUserOffline(currentUser.uid);
         } else {
-            await setUserOnline(currentUser.uid, true);
+            await updateLastSeen(currentUser.uid);
         }
     };
     
@@ -361,7 +382,7 @@
         if (document.getElementById('exploreView').classList.contains('active-view')) renderExplore();
     };
     
-    // ========== FIREBASE AUTH & USER FUNCTIONS (updated with online status) ==========
+    // ========== FIREBASE AUTH & USER FUNCTIONS (updated to use lastSeen only) ==========
     window.signupUser = async (email, password, name, age, gender) => {
         try {
             const userCred = await createUserWithEmailAndPassword(auth, email, password);
@@ -372,7 +393,7 @@
                 bio: "New here!", interests: [], profilePic: "", matches: [], swipes: [],
                 swipesToday: 0, lastSwipeDate: Date.now(), blocked: [], reports: [],
                 location: { lat: 40.7128, lng: -74.0060 }, createdAt: Date.now(),
-                online: false, lastSeen: Date.now(), emailVerified: false,
+                lastSeen: 0, emailVerified: false,
                 privacyLastSeen: true, privacyOnlineStatus: true,
                 prefAgeMin: 18, prefAgeMax: 100, prefDistance: 50,
                 isPremium: false, premiumPlan: "free", premiumExpiresAt: 0,
@@ -410,14 +431,14 @@
                     age: 25, gender: "Female", bio: "New here!", interests: [], profilePic: user.photoURL || "",
                     matches: [], swipes: [], swipesToday: 0, lastSwipeDate: Date.now(), blocked: [], reports: [],
                     location: { lat: 40.7128, lng: -74.0060 }, createdAt: Date.now(),
-                    online: true, lastSeen: Date.now(), emailVerified: true,
+                    lastSeen: Date.now(), emailVerified: true,
                     privacyLastSeen: true, privacyOnlineStatus: true,
                     prefAgeMin: 18, prefAgeMax: 100, prefDistance: 50,
                     isPremium: false, premiumPlan: "free", premiumExpiresAt: 0,
                     features: { unlimitedSwipes: false, readReceipts: false, seeWhoLikedYou: false, boost: false }
                 });
             } else {
-                await updateDoc(doc(db, "users", user.uid), { online: true, lastSeen: Date.now(), emailVerified: true });
+                await updateDoc(doc(db, "users", user.uid), { lastSeen: Date.now(), emailVerified: true });
             }
             return user;
         } catch (err) { alert(err.message); throw err; }
@@ -427,7 +448,7 @@
         try {
             const userCred = await signInWithEmailAndPassword(auth, email, password);
             if (!userCred.user.emailVerified) { alert("Please verify your email."); await auth.signOut(); throw new Error("Email not verified"); }
-            await updateDoc(doc(db, "users", userCred.user.uid), { online: true, lastSeen: Date.now(), emailVerified: true });
+            await updateDoc(doc(db, "users", userCred.user.uid), { lastSeen: Date.now(), emailVerified: true });
             return userCred.user;
         } catch (err) { throw err; }
     };
@@ -525,19 +546,14 @@
         attachNavEvents();
         await renderSwipeCards();
         renderChatList();
-        updateOnlineStatus();
-        // Set user online on login
-        await setUserOnline(currentUser.uid, true);
+        startHeartbeat(currentUser.uid);
+        // Set online on login (update lastSeen)
+        await updateLastSeen(currentUser.uid);
         // Set offline on page unload
         window.addEventListener('beforeunload', async () => {
-            if (currentUser) await setUserOnline(currentUser.uid, false);
+            if (currentUser) await setUserOffline(currentUser.uid);
+            if (heartbeatInterval) clearInterval(heartbeatInterval);
         });
-    }
-    
-    async function updateOnlineStatus() { 
-        setInterval(async () => { 
-            if (currentUser) await window.updateUserFirebase(currentUser.uid, { lastSeen: Date.now() }); 
-        }, 30000); 
     }
     
     async function loadCurrentUser() { const uid = localStorage.getItem('currentUserUid'); if (uid) { currentUser = await window.getUserFirebase(uid); if (!currentUser) { localStorage.removeItem('currentUserUid'); window.location.reload(); } } }
@@ -587,7 +603,7 @@
     
     function showReportModal(userId, userName) { const modal = document.createElement('div'); modal.className = 'report-modal'; modal.innerHTML = `<h3 style="color:white;">Report ${userName}</h3><button data-reason="Spam">Spam</button><button data-reason="Inappropriate">Inappropriate</button><button data-reason="Fake Profile">Fake Profile</button><button data-reason="Harassment">Harassment</button><button data-reason="Other">Other</button><button id="closeReportModal">Cancel</button>`; document.body.appendChild(modal); modal.querySelectorAll('[data-reason]').forEach(btn => { btn.addEventListener('click', async () => { await window.reportUser(currentUser.uid, userId, btn.dataset.reason); modal.remove(); }); }); modal.querySelector('#closeReportModal').addEventListener('click', () => modal.remove()); }
     
-    // ========== UPDATED CHAT FUNCTIONS WITH ONLINE STATUS AND LAST SEEN ==========
+    // ========== CHAT FUNCTIONS WITH CORRECT ONLINE STATUS ==========
     async function renderChatList() { 
         const container = document.getElementById('chatListContainer'); 
         const users = await window.getUsersFirebase(); 
@@ -597,7 +613,7 @@
             return; 
         } 
         container.innerHTML = matches.map(m => {
-            const showOnlineDot = (m.privacyOnlineStatus !== false && m.online === true);
+            const showOnlineDot = (m.privacyOnlineStatus !== false && isUserOnline(m, m.privacyOnlineStatus));
             return `<div class="chat-list-item" data-id="${m.uid}">
                         <div style="position:relative;">
                             <img class="avatar" src="${m.profilePic || 'https://randomuser.me/api/portraits/lego/1.jpg'}">
@@ -635,12 +651,12 @@
         const screenDiv = document.getElementById('chatScreenContainer'); 
         screenDiv.style.display = 'block'; 
         
-        // Determine status text based on privacy settings
+        // Determine status text based on privacy settings and lastSeen
         let statusText = '';
-        if (partner.privacyOnlineStatus !== false && partner.online === true) {
+        if (partner.privacyOnlineStatus !== false && isUserOnline(partner, true)) {
             statusText = 'Online';
         } else if (partner.privacyLastSeen !== false && partner.lastSeen) {
-            statusText = formatLastSeen(partner.lastSeen);
+            statusText = formatLastSeen(partner.lastSeen, true);
         } else {
             statusText = 'Offline';
         }
@@ -757,7 +773,8 @@
         document.getElementById('changePhotoBtn').onclick = () => document.getElementById('photoUploadInput').click(); 
         document.getElementById('photoUploadInput').onchange = async (e) => { if(e.target.files[0]){ const url = await window.uploadProfileImage(e.target.files[0], currentUser.uid); await window.updateUserFirebase(currentUser.uid, { profilePic: url }); currentUser.profilePic = url; document.getElementById('profileAvatar').src = url; alert("Profile photo updated!"); } }; 
         document.getElementById('logoutBtnProfile').onclick = async () => { 
-            await setUserOnline(currentUser.uid, false);
+            await setUserOffline(currentUser.uid);
+            if (heartbeatInterval) clearInterval(heartbeatInterval);
             localStorage.removeItem('currentUserUid'); 
             window.location.reload(); 
         }; 
