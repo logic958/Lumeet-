@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Lumeet | Dating + Messaging + Profile</title>
+    <title>Lumeet | Premium Dating App</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -127,6 +127,10 @@
         .blocked-user-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .owner-credit { margin-top: 24px; font-size: 0.8rem; color: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; gap: 6px; }
         .gold-check { color: #ffd700; }
+        .upgrade-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); border-radius: 32px; padding: 24px; z-index: 2001; width: 90%; max-width: 360px; text-align: center; }
+        .upgrade-plan { background: rgba(255,255,255,0.1); border-radius: 24px; padding: 16px; margin: 12px 0; cursor: pointer; transition: 0.2s; }
+        .upgrade-plan:hover { background: rgba(255,255,255,0.2); transform: scale(1.02); }
+        .premium-badge { background: linear-gradient(135deg, #ffd700, #ffb347); color: #1e2a1e; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: bold; display: inline-block; margin-left: 8px; }
     </style>
 </head>
 <body>
@@ -148,10 +152,10 @@
 
 <!-- MAIN APP -->
 <div id="mainApp" class="app-main">
-    <div id="swipeView" class="view"><h2 style="color:white; text-align:center;">Swipe</h2><div id="swipeCounter" class="swipe-counter">Swipes remaining today: 10</div><div id="cardsStack" class="cards-container"></div><div class="action-buttons"><div class="action-circle pass-btn" id="passBtn"><i class="fas fa-times fa-2x"></i></div><div class="action-circle like-btn" id="likeBtn"><i class="fas fa-heart fa-2x"></i></div></div><div id="matchToast" style="position:fixed; bottom:30%; left:10%; right:10%; background:gold; border-radius:50px; text-align:center; padding:12px; display:none; z-index:200;">✨ It's a match! ✨</div></div>
+    <div id="swipeView" class="view"><h2 style="color:white; text-align:center;">Swipe</h2><div id="swipeCounter" class="swipe-counter">Swipes remaining today: 20</div><div id="cardsStack" class="cards-container"></div><div class="action-buttons"><div class="action-circle pass-btn" id="passBtn"><i class="fas fa-times fa-2x"></i></div><div class="action-circle like-btn" id="likeBtn"><i class="fas fa-heart fa-2x"></i></div></div><div id="matchToast" style="position:fixed; bottom:30%; left:10%; right:10%; background:gold; border-radius:50px; text-align:center; padding:12px; display:none; z-index:200;">✨ It's a match! ✨</div></div>
     <div id="exploreView" class="view"><h2 style="color:white;">Discover</h2><div style="display:flex; gap:8px; flex-wrap:wrap;"><input type="number" id="filterAgeMin" placeholder="Min age" style="background:rgba(255,255,255,0.2); border-radius:40px; padding:8px; width:80px;"><input type="number" id="filterAgeMax" placeholder="Max age" style="background:rgba(255,255,255,0.2); border-radius:40px; padding:8px; width:80px;"><input type="number" id="filterDistance" placeholder="Distance (km)" style="background:rgba(255,255,255,0.2); border-radius:40px; padding:8px; width:100px;"><select id="filterGender" style="background:rgba(255,255,255,0.2); border-radius:40px;"><option value="">Any gender</option><option>Female</option><option>Male</option></select><button id="applyFilterBtn" class="small-glass">Filter</button></div><div id="matchQueue" style="background:rgba(0,0,0,0.3); border-radius:28px; padding:12px; margin-top:12px;"><h3 style="color:white; font-size:1rem;">Pending Likes</h3><div id="pendingLikesList"></div></div><div id="exploreList" class="explore-grid"></div></div>
     <div id="messagesView" class="view"><div id="chatListContainer" class="chat-list-container"></div><div id="chatScreenContainer" class="chat-screen-container" style="display:none;"></div></div>
-    <div id="profileView" class="view"><div class="glass-card" style="padding:20px;"><div style="text-align:right;"><i class="fas fa-cog" id="openSettingsBtn" style="font-size:1.5rem; color:white; cursor:pointer;"></i></div><div class="profile-top"><div style="position:relative; display:inline-block;"><img id="profileAvatar" class="profile-pic-large" src=""><div class="camera-overlay" id="changePhotoBtn"><i class="fas fa-camera"></i></div><input type="file" id="photoUploadInput" style="display:none;" accept="image/*"></div><h2 style="color:white; margin-top:8px;"><span id="profileUsername"></span><i class="fas fa-check-circle verified-badge" style="display:none;"></i></h2><p id="profileStatus" style="color:#ccc;"></p><div class="last-seen-preview" id="lastSeenPreview"></div><div class="progress-bar"><div class="progress-fill" id="profileProgress"></div></div><div class="stats-row"><div><strong id="matchesCount">0</strong><br>Matches</div><div><strong id="likesCount">0</strong><br>Likes</div><div><strong id="viewsCount">0</strong><br>Views</div></div><div class="action-buttons-row"><button id="editProfileBtn"><i class="fas fa-edit"></i> Edit Profile</button><button id="shareProfileBtn"><i class="fas fa-share-alt"></i> Share</button><button id="boostProfileBtn"><i class="fas fa-rocket"></i> Boost</button></div></div><div class="settings-list" id="settingsListContainer"></div><button id="logoutBtnProfile" style="background:rgba(255,80,80,0.5); border:none; border-radius:60px; padding:12px; width:100%; margin-top:20px; color:white;">Logout</button></div></div>
+    <div id="profileView" class="view"><div class="glass-card" style="padding:20px;"><div style="text-align:right;"><i class="fas fa-cog" id="openSettingsBtn" style="font-size:1.5rem; color:white; cursor:pointer;"></i></div><div class="profile-top"><div style="position:relative; display:inline-block;"><img id="profileAvatar" class="profile-pic-large" src=""><div class="camera-overlay" id="changePhotoBtn"><i class="fas fa-camera"></i></div><input type="file" id="photoUploadInput" style="display:none;" accept="image/*"></div><h2 style="color:white; margin-top:8px;"><span id="profileUsername"></span><i class="fas fa-check-circle verified-badge" style="display:none;"></i><span id="premiumBadge" class="premium-badge" style="display:none;">⭐ Premium</span></h2><p id="profileStatus" style="color:#ccc;"></p><div class="last-seen-preview" id="lastSeenPreview"></div><div class="progress-bar"><div class="progress-fill" id="profileProgress"></div></div><div class="stats-row"><div><strong id="matchesCount">0</strong><br>Matches</div><div><strong id="likesCount">0</strong><br>Likes</div><div><strong id="viewsCount">0</strong><br>Views</div></div><div class="action-buttons-row"><button id="editProfileBtn"><i class="fas fa-edit"></i> Edit Profile</button><button id="shareProfileBtn"><i class="fas fa-share-alt"></i> Share</button><button id="boostProfileBtn"><i class="fas fa-rocket"></i> Boost</button><button id="upgradeBtn" class="gradient-btn" style="background: linear-gradient(135deg, #ffd700, #ffb347); color:#1e2a1e;">Upgrade to Premium</button></div></div><div class="settings-list" id="settingsListContainer"></div><button id="logoutBtnProfile" style="background:rgba(255,80,80,0.5); border:none; border-radius:60px; padding:12px; width:100%; margin-top:20px; color:white;">Logout</button></div></div>
 
     <!-- Subviews -->
     <div id="editProfileView" class="view" style="display:none;"><div class="glass-card" style="padding:20px;"><div class="back-header"><button id="backFromEdit"><i class="fas fa-arrow-left"></i></button><h2 style="color:white;">Edit Profile</h2></div><div class="edit-profile-form"><div class="photo-grid" id="photoGrid"></div><input type="text" id="editName" placeholder="Name"><textarea id="editBio" rows="2" placeholder="Bio"></textarea><select id="editGender"><option>Female</option><option>Male</option></select><input type="number" id="editAge" placeholder="Age"><input type="text" id="editLocation" placeholder="Location"><label style="color:white;">Interests (add tags):</label><div class="interests-tag-input" id="interestsContainer"></div><input type="text" id="newInterestInput" placeholder="Type interest and press Enter" style="margin-top:4px;"><button id="saveProfileChanges" class="gradient-btn" style="margin-top:16px;">Save Changes</button></div></div></div>
@@ -189,6 +193,80 @@
     const storage = getStorage(app);
     const googleProvider = new GoogleAuthProvider();
     googleProvider.setCustomParameters({ prompt: 'select_account' });
+
+    // ========== PREMIUM HELPER FUNCTIONS ==========
+    async function upgradeToPremium(userId, plan) {
+        const now = Date.now();
+        const expiresAt = now + 30 * 24 * 60 * 60 * 1000; // 30 days
+        let features = {};
+        if (plan === 'gold') {
+            features = { unlimitedSwipes: true, readReceipts: false, seeWhoLikedYou: true, boost: false };
+        } else if (plan === 'platinum') {
+            features = { unlimitedSwipes: true, readReceipts: true, seeWhoLikedYou: true, boost: true };
+        } else {
+            return;
+        }
+        await updateDoc(doc(db, "users", userId), {
+            isPremium: true,
+            premiumPlan: plan,
+            premiumExpiresAt: expiresAt,
+            features: features
+        });
+        alert(`✨ Upgraded to ${plan.toUpperCase()} plan! Your premium features are now active.`);
+    }
+
+    async function checkAndExpirePremium(userId) {
+        const userSnap = await getDoc(doc(db, "users", userId));
+        const userData = userSnap.data();
+        if (userData.isPremium && userData.premiumExpiresAt && userData.premiumExpiresAt < Date.now()) {
+            // Downgrade to free
+            await updateDoc(doc(db, "users", userId), {
+                isPremium: false,
+                premiumPlan: "free",
+                features: { unlimitedSwipes: false, readReceipts: false, seeWhoLikedYou: false, boost: false }
+            });
+            console.log("Premium expired for user", userId);
+            return false;
+        }
+        return userData.isPremium;
+    }
+
+    // Show upgrade modal
+    function showUpgradeModal() {
+        const modal = document.createElement('div');
+        modal.className = 'upgrade-modal';
+        modal.innerHTML = `
+            <h3 style="color:white;">✨ Choose Your Plan ✨</h3>
+            <div class="upgrade-plan" data-plan="gold">
+                <strong style="color:#ffd700;">Gold – $3.27/month</strong><br>
+                ✓ Unlimited swipes<br>
+                ✓ See who liked you
+            </div>
+            <div class="upgrade-plan" data-plan="platinum">
+                <strong style="color:#ffd700;">Platinum – $12.99/month</strong><br>
+                ✓ All Gold features<br>
+                ✓ Read receipts<br>
+                ✓ Profile boost<br>
+                ✓ Priority support
+            </div>
+            <button class="small-glass" id="closeUpgradeModal">Cancel</button>
+        `;
+        document.body.appendChild(modal);
+        modal.querySelectorAll('.upgrade-plan').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const plan = btn.dataset.plan;
+                await upgradeToPremium(currentUser.uid, plan);
+                modal.remove();
+                // Refresh user data
+                const updated = await window.getUserFirebase(currentUser.uid);
+                currentUser = updated;
+                renderProfileUI();
+                renderSwipeCards();
+                renderExplore();
+            });
+        });
+        modal.querySelector('#closeUpgradeModal').addEventListener('click', () => modal.remove());
+    }
 
     // ========== HELPER FUNCTIONS (Account, Privacy, Dating Preferences) ==========
     window.changeEmail = async (newEmail) => {
@@ -263,7 +341,7 @@
         if (document.getElementById('exploreView').classList.contains('active-view')) renderExplore();
     };
     
-    // ========== EXISTING FIREBASE FUNCTIONS ==========
+    // ========== EXISTING FIREBASE FUNCTIONS (updated with premium fields) ==========
     window.signupUser = async (email, password, name, age, gender) => {
         try {
             const userCred = await createUserWithEmailAndPassword(auth, email, password);
@@ -276,7 +354,9 @@
                 location: { lat: 40.7128, lng: -74.0060 }, createdAt: Date.now(),
                 online: false, lastSeen: Date.now(), emailVerified: false,
                 privacyLastSeen: true, privacyOnlineStatus: true,
-                prefAgeMin: 18, prefAgeMax: 100, prefDistance: 50
+                prefAgeMin: 18, prefAgeMax: 100, prefDistance: 50,
+                isPremium: false, premiumPlan: "free", premiumExpiresAt: 0,
+                features: { unlimitedSwipes: false, readReceipts: false, seeWhoLikedYou: false, boost: false }
             });
             alert("Account created! A verification email has been sent to " + email);
             return userCred.user;
@@ -311,7 +391,9 @@
                     matches: [], swipes: [], swipesToday: 0, lastSwipeDate: Date.now(), blocked: [], reports: [],
                     location: { lat: 40.7128, lng: -74.0060 }, createdAt: Date.now(), online: true, lastSeen: Date.now(),
                     emailVerified: true, privacyLastSeen: true, privacyOnlineStatus: true,
-                    prefAgeMin: 18, prefAgeMax: 100, prefDistance: 50
+                    prefAgeMin: 18, prefAgeMax: 100, prefDistance: 50,
+                    isPremium: false, premiumPlan: "free", premiumExpiresAt: 0,
+                    features: { unlimitedSwipes: false, readReceipts: false, seeWhoLikedYou: false, boost: false }
                 });
             } else {
                 await updateDoc(doc(db, "users", user.uid), { online: true, lastSeen: Date.now(), emailVerified: true });
@@ -367,6 +449,7 @@
     
     // ========== APP STATE ==========
     let currentUser = null, currentChatPartner = null, typingTimeout = null;
+    let unsubscribeUser = null;
     
     // ========== UI FUNCTIONS ==========
     const loginView = document.getElementById('loginView'), signupView = document.getElementById('signupView'), mainApp = document.getElementById('mainApp');
@@ -399,18 +482,175 @@
         catch (err) { console.log(err); }
     });
     
-    async function showMainApp() { loginView.style.display = 'none'; signupView.style.display = 'none'; mainApp.style.display = 'block'; await loadCurrentUser(); await renderAll(); attachNavEvents(); await renderSwipeCards(); renderChatList(); updateOnlineStatus(); }
+    async function showMainApp() {
+        loginView.style.display = 'none';
+        signupView.style.display = 'none';
+        mainApp.style.display = 'block';
+        await loadCurrentUser();
+        // Set up real-time listener for premium changes
+        if (unsubscribeUser) unsubscribeUser();
+        const userRef = doc(db, "users", currentUser.uid);
+        unsubscribeUser = onSnapshot(userRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const newData = docSnap.data();
+                // Update currentUser in memory
+                currentUser = { ...currentUser, ...newData };
+                // Re-render premium-dependent UI
+                renderProfileUI();
+                renderSwipeCards();
+                renderExplore();
+                renderChatList(); // for read receipts toggle
+            }
+        });
+        await renderAll();
+        attachNavEvents();
+        await renderSwipeCards();
+        renderChatList();
+        updateOnlineStatus();
+    }
+    
     async function updateOnlineStatus() { setInterval(async () => { if (currentUser) await window.updateUserFirebase(currentUser.uid, { lastSeen: Date.now() }); }, 30000); }
     async function loadCurrentUser() { const uid = localStorage.getItem('currentUserUid'); if (uid) { currentUser = await window.getUserFirebase(uid); if (!currentUser) { localStorage.removeItem('currentUserUid'); window.location.reload(); } } }
-    async function checkDailySwipes() { const today = new Date().toDateString(); const lastSwipeDate = currentUser.lastSwipeDate ? new Date(currentUser.lastSwipeDate).toDateString() : null; if (lastSwipeDate !== today) { await window.updateUserFirebase(currentUser.uid, { swipesToday: 0, lastSwipeDate: Date.now() }); currentUser.swipesToday = 0; } const remaining = Math.max(0, 10 - (currentUser.swipesToday || 0)); document.getElementById('swipeCounter').innerText = `Swipes remaining today: ${remaining}`; return remaining > 0; }
+    
+    async function checkDailySwipes() {
+        // Premium check
+        if (currentUser.features?.unlimitedSwipes === true) {
+            document.getElementById('swipeCounter').innerText = `✨ Unlimited swipes (Premium) ✨`;
+            return true;
+        }
+        const today = new Date().toDateString();
+        const lastSwipeDate = currentUser.lastSwipeDate ? new Date(currentUser.lastSwipeDate).toDateString() : null;
+        if (lastSwipeDate !== today) {
+            await window.updateUserFirebase(currentUser.uid, { swipesToday: 0, lastSwipeDate: Date.now() });
+            currentUser.swipesToday = 0;
+        }
+        const remaining = Math.max(0, 20 - (currentUser.swipesToday || 0));
+        document.getElementById('swipeCounter').innerText = `Swipes remaining today: ${remaining}`;
+        return remaining > 0;
+    }
+    
     async function getAvailableProfiles() { const users = await window.getUsersFirebase(); const blocked = currentUser.blocked || []; return users.filter(u => u.uid !== currentUser?.uid && !currentUser?.swipes?.includes(u.uid) && !blocked.includes(u.uid)); }
-    async function renderSwipeCards() { let available = await getAvailableProfiles(); if(available.length === 0){ document.getElementById('cardsStack').innerHTML = `<div class="glass-card" style="padding:30px;text-align:center;">✨ No more profiles ✨</div>`; return; } let idx = 0; const container = document.getElementById('cardsStack'); function display() { if(idx >= available.length) return; const p = available[idx]; container.innerHTML = `<div class="swipe-card"><img class="card-img" src="${p.profilePic || 'https://randomuser.me/api/portraits/lego/1.jpg'}"><h3 style="color:white;">${p.name}, ${p.age}</h3><p>${p.bio}</p><button class="small-glass report-profile-btn" data-id="${p.uid}" style="margin-top:10px; background:rgba(255,80,80,0.5);">Report</button></div>`; const reportBtn = container.querySelector('.report-profile-btn'); if(reportBtn) reportBtn.addEventListener('click', (e) => { e.stopPropagation(); showReportModal(p.uid, p.name); }); } display(); document.getElementById('likeBtn').onclick = async () => { if(idx >= available.length) return; const canSwipe = await checkDailySwipes(); if (!canSwipe) { alert("Daily swipe limit reached!"); return; } const target = available[idx]; const swipes = currentUser.swipes || []; swipes.push(target.uid); await window.updateUserFirebase(currentUser.uid, { swipes, swipesToday: (currentUser.swipesToday || 0) + 1 }); currentUser.swipes = swipes; currentUser.swipesToday = (currentUser.swipesToday || 0) + 1; if (target.swipes && target.swipes.includes(currentUser.uid)) { const matches = currentUser.matches || []; if (!matches.includes(target.uid)) { matches.push(target.uid); await window.updateUserFirebase(currentUser.uid, { matches }); currentUser.matches = matches; const targetMatches = target.matches || []; if (!targetMatches.includes(currentUser.uid)) { targetMatches.push(currentUser.uid); await window.updateUserFirebase(target.uid, { matches: targetMatches }); } document.getElementById('matchToast').style.display = 'block'; setTimeout(() => document.getElementById('matchToast').style.display = 'none', 3000); } } idx++; if(idx < available.length) display(); else await renderSwipeCards(); await renderProfileUI(); renderChatList(); await checkDailySwipes(); }; document.getElementById('passBtn').onclick = async () => { if(idx >= available.length) return; const canSwipe = await checkDailySwipes(); if (!canSwipe) { alert("Daily swipe limit reached!"); return; } const swipes = currentUser.swipes || []; swipes.push(available[idx].uid); await window.updateUserFirebase(currentUser.uid, { swipes, swipesToday: (currentUser.swipesToday || 0) + 1 }); currentUser.swipes = swipes; currentUser.swipesToday = (currentUser.swipesToday || 0) + 1; idx++; if(idx < available.length) display(); else await renderSwipeCards(); await checkDailySwipes(); }; await checkDailySwipes(); }
-    async function renderExplore() { let users = await window.getUsersFirebase(); let filtered = users.filter(u => u.uid !== currentUser?.uid && !(currentUser.blocked || []).includes(u.uid)); const minAge = parseInt(document.getElementById('filterAgeMin').value) || (currentUser.prefAgeMin || 18); const maxAge = parseInt(document.getElementById('filterAgeMax').value) || (currentUser.prefAgeMax || 100); const gender = document.getElementById('filterGender').value; if(gender) filtered = filtered.filter(u => u.gender === gender); filtered = filtered.filter(u => u.age >= minAge && u.age <= maxAge); const pendingLikes = users.filter(u => u.swipes && u.swipes.includes(currentUser.uid) && !currentUser.swipes?.includes(u.uid)); document.getElementById('pendingLikesList').innerHTML = pendingLikes.map(u => `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.1);"><img src="${u.profilePic || 'https://randomuser.me/api/portraits/lego/1.jpg'}" width="40" style="border-radius:50%;"> ${u.name}, ${u.age} <button class="small-glass like-back" data-id="${u.uid}" style="float:right;">Like Back</button></div>`).join(''); document.querySelectorAll('.like-back').forEach(btn => btn.addEventListener('click', async () => { const targetId = btn.dataset.id; const swipes = currentUser.swipes || []; if(!swipes.includes(targetId)) { swipes.push(targetId); await window.updateUserFirebase(currentUser.uid, { swipes }); currentUser.swipes = swipes; const target = users.find(u => u.uid === targetId); const matches = currentUser.matches || []; if (!matches.includes(targetId) && target.swipes && target.swipes.includes(currentUser.uid)) { matches.push(targetId); await window.updateUserFirebase(currentUser.uid, { matches }); currentUser.matches = matches; alert(`✨ Matched with ${target.name}! ✨`); } await renderExplore(); } })); document.getElementById('exploreList').innerHTML = filtered.map(u => `<div class="explore-card"><img src="${u.profilePic || 'https://randomuser.me/api/portraits/lego/1.jpg'}" width="80" style="border-radius:50%;"><h4>${u.name}, ${u.age}</h4><button class="small-glass explore-like" data-id="${u.uid}">Like</button><button class="small-glass report-btn" data-id="${u.uid}" style="background:rgba(255,80,80,0.5);">Report</button></div>`).join(''); document.querySelectorAll('.explore-like').forEach(btn => btn.addEventListener('click', async () => { const targetId = btn.dataset.id; const swipes = currentUser.swipes || []; if(!swipes.includes(targetId)) { swipes.push(targetId); await window.updateUserFirebase(currentUser.uid, { swipes }); currentUser.swipes = swipes; const target = users.find(u => u.uid === targetId); if (target.swipes && target.swipes.includes(currentUser.uid)) { const matches = currentUser.matches || []; if (!matches.includes(targetId)) { matches.push(targetId); await window.updateUserFirebase(currentUser.uid, { matches }); currentUser.matches = matches; alert(`✨ Matched with ${target.name}! ✨`); } } alert("Liked!"); await renderExplore(); } })); document.querySelectorAll('.report-btn').forEach(btn => btn.addEventListener('click', () => { const targetId = btn.dataset.id; const target = filtered.find(u => u.uid === targetId); showReportModal(targetId, target?.name); })); }
+    async function renderSwipeCards() { let available = await getAvailableProfiles(); if(available.length === 0){ document.getElementById('cardsStack').innerHTML = `<div class="glass-card" style="padding:30px;text-align:center;">✨ No more profiles ✨</div>`; return; } let idx = 0; const container = document.getElementById('cardsStack'); function display() { if(idx >= available.length) return; const p = available[idx]; container.innerHTML = `<div class="swipe-card"><img class="card-img" src="${p.profilePic || 'https://randomuser.me/api/portraits/lego/1.jpg'}"><h3 style="color:white;">${p.name}, ${p.age}</h3><p>${p.bio}</p><button class="small-glass report-profile-btn" data-id="${p.uid}" style="margin-top:10px; background:rgba(255,80,80,0.5);">Report</button></div>`; const reportBtn = container.querySelector('.report-profile-btn'); if(reportBtn) reportBtn.addEventListener('click', (e) => { e.stopPropagation(); showReportModal(p.uid, p.name); }); } display(); document.getElementById('likeBtn').onclick = async () => { if(idx >= available.length) return; const canSwipe = await checkDailySwipes(); if (!canSwipe) { alert("Daily swipe limit reached! Upgrade to premium for unlimited swipes."); return; } const target = available[idx]; const swipes = currentUser.swipes || []; swipes.push(target.uid); await window.updateUserFirebase(currentUser.uid, { swipes, swipesToday: (currentUser.swipesToday || 0) + 1 }); currentUser.swipes = swipes; currentUser.swipesToday = (currentUser.swipesToday || 0) + 1; if (target.swipes && target.swipes.includes(currentUser.uid)) { const matches = currentUser.matches || []; if (!matches.includes(target.uid)) { matches.push(target.uid); await window.updateUserFirebase(currentUser.uid, { matches }); currentUser.matches = matches; const targetMatches = target.matches || []; if (!targetMatches.includes(currentUser.uid)) { targetMatches.push(currentUser.uid); await window.updateUserFirebase(target.uid, { matches: targetMatches }); } document.getElementById('matchToast').style.display = 'block'; setTimeout(() => document.getElementById('matchToast').style.display = 'none', 3000); } } idx++; if(idx < available.length) display(); else await renderSwipeCards(); await renderProfileUI(); renderChatList(); await checkDailySwipes(); }; document.getElementById('passBtn').onclick = async () => { if(idx >= available.length) return; const canSwipe = await checkDailySwipes(); if (!canSwipe) { alert("Daily swipe limit reached! Upgrade to premium for unlimited swipes."); return; } const swipes = currentUser.swipes || []; swipes.push(available[idx].uid); await window.updateUserFirebase(currentUser.uid, { swipes, swipesToday: (currentUser.swipesToday || 0) + 1 }); currentUser.swipes = swipes; currentUser.swipesToday = (currentUser.swipesToday || 0) + 1; idx++; if(idx < available.length) display(); else await renderSwipeCards(); await checkDailySwipes(); }; await checkDailySwipes(); }
+    
+    async function renderExplore() { 
+        let users = await window.getUsersFirebase(); 
+        let filtered = users.filter(u => u.uid !== currentUser?.uid && !(currentUser.blocked || []).includes(u.uid)); 
+        const minAge = parseInt(document.getElementById('filterAgeMin').value) || (currentUser.prefAgeMin || 18); 
+        const maxAge = parseInt(document.getElementById('filterAgeMax').value) || (currentUser.prefAgeMax || 100); 
+        const gender = document.getElementById('filterGender').value; 
+        if(gender) filtered = filtered.filter(u => u.gender === gender); 
+        filtered = filtered.filter(u => u.age >= minAge && u.age <= maxAge); 
+        
+        // Pending likes – only show if premium feature enabled
+        const pendingLikes = users.filter(u => u.swipes && u.swipes.includes(currentUser.uid) && !currentUser.swipes?.includes(u.uid));
+        const matchQueueDiv = document.getElementById('matchQueue');
+        if (currentUser.features?.seeWhoLikedYou === true) {
+            matchQueueDiv.style.display = 'block';
+            document.getElementById('pendingLikesList').innerHTML = pendingLikes.map(u => `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.1);"><img src="${u.profilePic || 'https://randomuser.me/api/portraits/lego/1.jpg'}" width="40" style="border-radius:50%;"> ${u.name}, ${u.age} <button class="small-glass like-back" data-id="${u.uid}" style="float:right;">Like Back</button></div>`).join('');
+            document.querySelectorAll('.like-back').forEach(btn => btn.addEventListener('click', async () => { const targetId = btn.dataset.id; const swipes = currentUser.swipes || []; if(!swipes.includes(targetId)) { swipes.push(targetId); await window.updateUserFirebase(currentUser.uid, { swipes }); currentUser.swipes = swipes; const target = users.find(u => u.uid === targetId); const matches = currentUser.matches || []; if (!matches.includes(targetId) && target.swipes && target.swipes.includes(currentUser.uid)) { matches.push(targetId); await window.updateUserFirebase(currentUser.uid, { matches }); currentUser.matches = matches; alert(`✨ Matched with ${target.name}! ✨`); } await renderExplore(); } }));
+        } else {
+            matchQueueDiv.style.display = 'none';
+        }
+        
+        document.getElementById('exploreList').innerHTML = filtered.map(u => `<div class="explore-card"><img src="${u.profilePic || 'https://randomuser.me/api/portraits/lego/1.jpg'}" width="80" style="border-radius:50%;"><h4>${u.name}, ${u.age}</h4><button class="small-glass explore-like" data-id="${u.uid}">Like</button><button class="small-glass report-btn" data-id="${u.uid}" style="background:rgba(255,80,80,0.5);">Report</button></div>`).join('');
+        document.querySelectorAll('.explore-like').forEach(btn => btn.addEventListener('click', async () => { const targetId = btn.dataset.id; const swipes = currentUser.swipes || []; if(!swipes.includes(targetId)) { swipes.push(targetId); await window.updateUserFirebase(currentUser.uid, { swipes }); currentUser.swipes = swipes; const target = users.find(u => u.uid === targetId); if (target.swipes && target.swipes.includes(currentUser.uid)) { const matches = currentUser.matches || []; if (!matches.includes(targetId)) { matches.push(targetId); await window.updateUserFirebase(currentUser.uid, { matches }); currentUser.matches = matches; alert(`✨ Matched with ${target.name}! ✨`); } } alert("Liked!"); await renderExplore(); } }));
+        document.querySelectorAll('.report-btn').forEach(btn => btn.addEventListener('click', () => { const targetId = btn.dataset.id; const target = filtered.find(u => u.uid === targetId); showReportModal(targetId, target?.name); }));
+    }
+    
     function showReportModal(userId, userName) { const modal = document.createElement('div'); modal.className = 'report-modal'; modal.innerHTML = `<h3 style="color:white;">Report ${userName}</h3><button data-reason="Spam">Spam</button><button data-reason="Inappropriate">Inappropriate</button><button data-reason="Fake Profile">Fake Profile</button><button data-reason="Harassment">Harassment</button><button data-reason="Other">Other</button><button id="closeReportModal">Cancel</button>`; document.body.appendChild(modal); modal.querySelectorAll('[data-reason]').forEach(btn => { btn.addEventListener('click', async () => { await window.reportUser(currentUser.uid, userId, btn.dataset.reason); modal.remove(); }); }); modal.querySelector('#closeReportModal').addEventListener('click', () => modal.remove()); }
+    
     async function renderChatList() { const container = document.getElementById('chatListContainer'); const users = await window.getUsersFirebase(); const matches = users.filter(u => currentUser?.matches?.includes(u.uid) && !(currentUser.blocked || []).includes(u.uid)); if(matches.length === 0){ container.innerHTML = `<div class="glass-card" style="padding:20px;text-align:center;">No matches yet. Start swiping!</div>`; return; } container.innerHTML = matches.map(m => `<div class="chat-list-item" data-id="${m.uid}"><div style="position:relative;"><img class="avatar" src="${m.profilePic || 'https://randomuser.me/api/portraits/lego/1.jpg'}">${(m.privacyOnlineStatus !== false && m.online) ? '<span class="online-dot"></span>' : ''}</div><div class="chat-info"><div class="chat-name">${m.name}</div><div class="last-msg">Tap to chat</div></div><div class="chat-meta"><button class="small-glass block-chat-btn" data-id="${m.uid}" style="background:rgba(255,80,80,0.5); padding:4px 8px;">Block</button></div></div>`).join(''); document.querySelectorAll('.chat-list-item').forEach(el => el.addEventListener('click', (e) => { if(!e.target.classList.contains('block-chat-btn')) openChatScreen(el.dataset.id); })); document.querySelectorAll('.block-chat-btn').forEach(btn => { btn.addEventListener('click', async (e) => { e.stopPropagation(); const targetId = btn.dataset.id; if(confirm("Block this user?")) { await window.blockUser(currentUser.uid, targetId); currentUser.blocked = currentUser.blocked || []; currentUser.blocked.push(targetId); await renderChatList(); } }); }); }
-    async function openChatScreen(partnerId) { currentChatPartner = partnerId; const users = await window.getUsersFirebase(); const partner = users.find(u => u.uid === partnerId); document.getElementById('chatListContainer').style.display = 'none'; const screenDiv = document.getElementById('chatScreenContainer'); screenDiv.style.display = 'block'; screenDiv.innerHTML = `<div class="chat-header"><button class="back-btn" id="backToChatList"><i class="fas fa-arrow-left"></i></button><div class="chat-profile"><img src="${partner.profilePic || 'https://randomuser.me/api/portraits/lego/1.jpg'}" id="chatAvatar"><div><div class="chat-name">${partner.name}</div><div class="chat-status" id="chatStatus">${(partner.privacyOnlineStatus !== false && partner.online) ? 'Online' : 'Offline'}</div><div id="typingStatus" style="font-size:0.7rem; color:#ccc;"></div></div></div><div class="chat-actions"><i class="fas fa-phone" id="callDemo"></i><i class="fas fa-video" id="videoDemo"></i><i class="fas fa-ban" id="blockFromChat" style="color:#ff6b6b;"></i><i class="fas fa-ellipsis-v" id="menuUnmatch"></i></div></div><div class="messages-area" id="messagesArea"></div><div class="input-area"><input type="text" id="messageInputChat" placeholder="Type a message..."><button id="sendChatMsg"><i class="fas fa-paper-plane"></i></button></div>`; document.getElementById('backToChatList').addEventListener('click', () => { screenDiv.style.display = 'none'; document.getElementById('chatListContainer').style.display = 'block'; currentChatPartner = null; renderChatList(); }); document.getElementById('blockFromChat')?.addEventListener('click', async () => { if(confirm(`Block ${partner.name}?`)) { await window.blockUser(currentUser.uid, partnerId); currentUser.blocked = currentUser.blocked || []; currentUser.blocked.push(partnerId); document.getElementById('backToChatList').click(); } }); document.getElementById('menuUnmatch')?.addEventListener('click', async () => { if(confirm(`Unmatch ${partner.name}?`)){ const matches = currentUser.matches.filter(id => id !== partnerId); await window.updateUserFirebase(currentUser.uid, { matches }); currentUser.matches = matches; document.getElementById('backToChatList').click(); } }); const typingRef = doc(db, "typing", `${currentUser.uid}_${partnerId}`); onSnapshot(typingRef, (doc) => { if (doc.exists() && doc.data().isTyping && doc.data().userId === partnerId) document.getElementById('typingStatus').innerText = "typing..."; else document.getElementById('typingStatus').innerText = ""; }); const input = document.getElementById('messageInputChat'); input.addEventListener('input', async () => { await setDoc(typingRef, { userId: currentUser.uid, isTyping: true, timestamp: Date.now() }); if (typingTimeout) clearTimeout(typingTimeout); typingTimeout = setTimeout(async () => { await setDoc(typingRef, { userId: currentUser.uid, isTyping: false, timestamp: Date.now() }); }, 1000); }); const chatId = [currentUser.uid, partnerId].sort().join('_'); const messagesArea = document.getElementById('messagesArea'); const q = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp")); onSnapshot(q, async (snapshot) => { const messages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); messagesArea.innerHTML = messages.map(msg => { const isSent = msg.senderId === currentUser.uid; const time = new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); let statusHtml = ''; if (isSent) { if (msg.status === 'sent') statusHtml = '<span class="message-status status-sent">✓</span>'; else if (msg.status === 'delivered') statusHtml = '<span class="message-status status-delivered">✓✓</span>'; else if (msg.status === 'read') statusHtml = '<span class="message-status status-read">✓✓</span>'; } return `<div class="message-bubble ${isSent ? 'sent' : 'received'}"><div class="message-text">${msg.text}</div><div class="message-time">${time} ${statusHtml}</div></div>`; }).join(''); messagesArea.scrollTop = messagesArea.scrollHeight; const batch = writeBatch(db); messages.forEach(msg => { if (msg.senderId === partnerId && !msg.read) { const msgRef = doc(db, "chats", chatId, "messages", msg.id); batch.update(msgRef, { read: true, status: 'read' }); } }); await batch.commit(); }); document.getElementById('sendChatMsg').onclick = async () => { const text = input.value.trim(); if(!text) return; await window.sendMessageFirebase(chatId, currentUser.uid, text); input.value = ''; await setDoc(typingRef, { userId: currentUser.uid, isTyping: false, timestamp: Date.now() }); }; }
+    
+    async function openChatScreen(partnerId) { 
+        currentChatPartner = partnerId; 
+        const users = await window.getUsersFirebase(); 
+        const partner = users.find(u => u.uid === partnerId); 
+        document.getElementById('chatListContainer').style.display = 'none'; 
+        const screenDiv = document.getElementById('chatScreenContainer'); 
+        screenDiv.style.display = 'block'; 
+        screenDiv.innerHTML = `<div class="chat-header"><button class="back-btn" id="backToChatList"><i class="fas fa-arrow-left"></i></button><div class="chat-profile"><img src="${partner.profilePic || 'https://randomuser.me/api/portraits/lego/1.jpg'}" id="chatAvatar"><div><div class="chat-name">${partner.name}</div><div class="chat-status" id="chatStatus">${(partner.privacyOnlineStatus !== false && partner.online) ? 'Online' : 'Offline'}</div><div id="typingStatus" style="font-size:0.7rem; color:#ccc;"></div></div></div><div class="chat-actions"><i class="fas fa-phone" id="callDemo"></i><i class="fas fa-video" id="videoDemo"></i><i class="fas fa-ban" id="blockFromChat" style="color:#ff6b6b;"></i><i class="fas fa-ellipsis-v" id="menuUnmatch"></i></div></div><div class="messages-area" id="messagesArea"></div><div class="input-area"><input type="text" id="messageInputChat" placeholder="Type a message..."><button id="sendChatMsg"><i class="fas fa-paper-plane"></i></button></div>`; 
+        document.getElementById('backToChatList').addEventListener('click', () => { screenDiv.style.display = 'none'; document.getElementById('chatListContainer').style.display = 'block'; currentChatPartner = null; renderChatList(); }); 
+        document.getElementById('blockFromChat')?.addEventListener('click', async () => { if(confirm(`Block ${partner.name}?`)) { await window.blockUser(currentUser.uid, partnerId); currentUser.blocked = currentUser.blocked || []; currentUser.blocked.push(partnerId); document.getElementById('backToChatList').click(); } }); 
+        document.getElementById('menuUnmatch')?.addEventListener('click', async () => { if(confirm(`Unmatch ${partner.name}?`)){ const matches = currentUser.matches.filter(id => id !== partnerId); await window.updateUserFirebase(currentUser.uid, { matches }); currentUser.matches = matches; document.getElementById('backToChatList').click(); } }); 
+        const typingRef = doc(db, "typing", `${currentUser.uid}_${partnerId}`); 
+        onSnapshot(typingRef, (doc) => { if (doc.exists() && doc.data().isTyping && doc.data().userId === partnerId) document.getElementById('typingStatus').innerText = "typing..."; else document.getElementById('typingStatus').innerText = ""; }); 
+        const input = document.getElementById('messageInputChat'); 
+        input.addEventListener('input', async () => { await setDoc(typingRef, { userId: currentUser.uid, isTyping: true, timestamp: Date.now() }); if (typingTimeout) clearTimeout(typingTimeout); typingTimeout = setTimeout(async () => { await setDoc(typingRef, { userId: currentUser.uid, isTyping: false, timestamp: Date.now() }); }, 1000); }); 
+        const chatId = [currentUser.uid, partnerId].sort().join('_'); 
+        const messagesArea = document.getElementById('messagesArea'); 
+        const q = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp")); 
+        onSnapshot(q, async (snapshot) => { 
+            const messages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); 
+            messagesArea.innerHTML = messages.map(msg => { 
+                const isSent = msg.senderId === currentUser.uid; 
+                const time = new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); 
+                let statusHtml = ''; 
+                if (isSent && currentUser.features?.readReceipts === true) { 
+                    if (msg.status === 'sent') statusHtml = '<span class="message-status status-sent">✓</span>'; 
+                    else if (msg.status === 'delivered') statusHtml = '<span class="message-status status-delivered">✓✓</span>'; 
+                    else if (msg.status === 'read') statusHtml = '<span class="message-status status-read">✓✓</span>'; 
+                } 
+                return `<div class="message-bubble ${isSent ? 'sent' : 'received'}"><div class="message-text">${msg.text}</div><div class="message-time">${time} ${statusHtml}</div></div>`; 
+            }).join(''); 
+            messagesArea.scrollTop = messagesArea.scrollHeight; 
+            const batch = writeBatch(db); 
+            messages.forEach(msg => { 
+                if (msg.senderId === partnerId && !msg.read) { 
+                    const msgRef = doc(db, "chats", chatId, "messages", msg.id); 
+                    batch.update(msgRef, { read: true, status: 'read' }); 
+                } 
+            }); 
+            await batch.commit(); 
+        }); 
+        document.getElementById('sendChatMsg').onclick = async () => { const text = input.value.trim(); if(!text) return; await window.sendMessageFirebase(chatId, currentUser.uid, text); input.value = ''; await setDoc(typingRef, { userId: currentUser.uid, isTyping: false, timestamp: Date.now() }); }; 
+    }
+    
     async function updateProfileCompletion() { const fields = [currentUser.name, currentUser.bio, currentUser.location]; let filled = fields.filter(f => f).length; let percent = (filled/3)*100; document.getElementById('profileProgress').style.width = percent+'%'; }
-    async function renderProfileUI() { document.getElementById('profileUsername').innerText = currentUser.name; document.getElementById('profileStatus').innerText = currentUser.bio || "Hey there!"; document.getElementById('profileAvatar').src = currentUser.profilePic || 'https://randomuser.me/api/portraits/lego/1.jpg'; document.getElementById('matchesCount').innerText = currentUser.matches?.length || 0; document.getElementById('likesCount').innerText = currentUser.swipes?.length || 0; document.getElementById('viewsCount').innerText = "0"; updateProfileCompletion(); const settingsList = [ { icon: "fas fa-user-circle", title: "Account", key: "account" }, { icon: "fas fa-lock", title: "Privacy", key: "privacy" }, { icon: "fas fa-sliders-h", title: "Dating Preferences", key: "dating" }, { icon: "fas fa-crown", title: "Premium Features", key: "premium" }, { icon: "fas fa-question-circle", title: "Help & Support", key: "help" } ]; document.getElementById('settingsListContainer').innerHTML = settingsList.map(s => `<div class="settings-item" data-key="${s.key}"><div class="settings-item-left"><i class="${s.icon}" style="width:24px"></i><span>${s.title}</span></div><i class="fas fa-chevron-right"></i></div>`).join(''); document.querySelectorAll('.settings-item').forEach(el => el.addEventListener('click', () => showSettingsDetail(el.dataset.key))); document.getElementById('editProfileBtn').onclick = () => { document.getElementById('profileView').classList.remove('active-view'); document.getElementById('editProfileView').style.display = 'block'; loadEditProfile(); }; document.getElementById('boostProfileBtn').onclick = () => alert("✨ Boost mode activated (premium UI)"); document.getElementById('changePhotoBtn').onclick = () => document.getElementById('photoUploadInput').click(); document.getElementById('photoUploadInput').onchange = async (e) => { if(e.target.files[0]){ const url = await window.uploadProfileImage(e.target.files[0], currentUser.uid); await window.updateUserFirebase(currentUser.uid, { profilePic: url }); currentUser.profilePic = url; document.getElementById('profileAvatar').src = url; alert("Profile photo updated!"); } }; document.getElementById('logoutBtnProfile').onclick = () => { localStorage.removeItem('currentUserUid'); window.location.reload(); }; }
+    
+    async function renderProfileUI() { 
+        document.getElementById('profileUsername').innerText = currentUser.name; 
+        document.getElementById('profileStatus').innerText = currentUser.bio || "Hey there!"; 
+        document.getElementById('profileAvatar').src = currentUser.profilePic || 'https://randomuser.me/api/portraits/lego/1.jpg'; 
+        document.getElementById('matchesCount').innerText = currentUser.matches?.length || 0; 
+        document.getElementById('likesCount').innerText = currentUser.swipes?.length || 0; 
+        document.getElementById('viewsCount').innerText = "0"; 
+        updateProfileCompletion(); 
+        
+        // Premium badge
+        const premiumBadge = document.getElementById('premiumBadge');
+        if (currentUser.isPremium) {
+            premiumBadge.style.display = 'inline-block';
+        } else {
+            premiumBadge.style.display = 'none';
+        }
+        
+        // Boost button – only if premium feature enabled
+        const boostBtn = document.getElementById('boostProfileBtn');
+        if (currentUser.features?.boost === true) {
+            boostBtn.onclick = () => alert("✨ Boost activated! Your profile is now at the top for 30 minutes. ✨");
+            boostBtn.style.opacity = '1';
+        } else {
+            boostBtn.onclick = () => alert("Upgrade to Platinum to unlock Boost feature!");
+            boostBtn.style.opacity = '0.7';
+        }
+        
+        const settingsList = [ 
+            { icon: "fas fa-user-circle", title: "Account", key: "account" }, 
+            { icon: "fas fa-lock", title: "Privacy", key: "privacy" }, 
+            { icon: "fas fa-sliders-h", title: "Dating Preferences", key: "dating" }, 
+            { icon: "fas fa-crown", title: "Premium Features", key: "premium" }, 
+            { icon: "fas fa-question-circle", title: "Help & Support", key: "help" } 
+        ]; 
+        document.getElementById('settingsListContainer').innerHTML = settingsList.map(s => `<div class="settings-item" data-key="${s.key}"><div class="settings-item-left"><i class="${s.icon}" style="width:24px"></i><span>${s.title}</span></div><i class="fas fa-chevron-right"></i></div>`).join(''); 
+        document.querySelectorAll('.settings-item').forEach(el => el.addEventListener('click', () => showSettingsDetail(el.dataset.key))); 
+        document.getElementById('editProfileBtn').onclick = () => { document.getElementById('profileView').classList.remove('active-view'); document.getElementById('editProfileView').style.display = 'block'; loadEditProfile(); }; 
+        document.getElementById('shareProfileBtn').onclick = () => alert("Share profile link (demo)"); 
+        document.getElementById('changePhotoBtn').onclick = () => document.getElementById('photoUploadInput').click(); 
+        document.getElementById('photoUploadInput').onchange = async (e) => { if(e.target.files[0]){ const url = await window.uploadProfileImage(e.target.files[0], currentUser.uid); await window.updateUserFirebase(currentUser.uid, { profilePic: url }); currentUser.profilePic = url; document.getElementById('profileAvatar').src = url; alert("Profile photo updated!"); } }; 
+        document.getElementById('logoutBtnProfile').onclick = () => { localStorage.removeItem('currentUserUid'); window.location.reload(); }; 
+        document.getElementById('upgradeBtn').onclick = () => showUpgradeModal();
+    }
+    
     function loadEditProfile() { document.getElementById('editName').value = currentUser.name; document.getElementById('editBio').value = currentUser.bio || ""; document.getElementById('editGender').value = currentUser.gender; document.getElementById('editAge').value = currentUser.age; document.getElementById('editLocation').value = currentUser.location || ""; const interests = currentUser.interests || []; const container = document.getElementById('interestsContainer'); function renderTags() { container.innerHTML = interests.map((tag,i) => `<span class="tag">${tag} <i class="fas fa-times-circle remove-tag" data-index="${i}"></i></span>`).join(''); } renderTags(); document.getElementById('newInterestInput').onkeypress = (e) => { if(e.key === 'Enter' && e.target.value.trim()){ interests.push(e.target.value.trim()); renderTags(); e.target.value = ''; } }; document.getElementById('saveProfileChanges').onclick = async () => { await window.updateUserFirebase(currentUser.uid, { name: document.getElementById('editName').value, bio: document.getElementById('editBio').value, gender: document.getElementById('editGender').value, age: parseInt(document.getElementById('editAge').value), location: document.getElementById('editLocation').value, interests: interests }); currentUser = await window.getUserFirebase(currentUser.uid); alert("Profile updated"); document.getElementById('backFromEdit').click(); }; document.getElementById('backFromEdit').onclick = () => { document.getElementById('editProfileView').style.display = 'none'; document.getElementById('profileView').classList.add('active-view'); renderProfileUI(); }; }
     
     function showSettingsDetail(section) {
@@ -443,7 +683,7 @@
                 <button class="small-glass" id="savePrefsBtn">Save Preferences</button>
             `;
         } else if (section === 'premium') {
-            content = `<div class="premium-card"><i class="fas fa-crown" style="font-size:2rem; color:gold;"></i><h3>Get Verified</h3><p>Blue check badge & priority</p><button class="small-glass" id="verifyBtn">Upgrade Now</button><hr><div style="text-align:left; padding:8px;"><strong>Free Plan:</strong><br>• 10 swipes/day<br>• Basic filters<br>• Standard support<br><br><strong style="color:#22c55e;">Plus ($3.27/month):</strong><br>✓ Unlimited swipes<br>✓ See who liked you<br>✓ Rewind last swipe<br>✓ 1 Boost/month<br>✓ No ads<br><br><strong>Premium ($12.99/month):</strong><br>✓ All Plus features<br>✓ Incognito mode<br>✓ Travel mode<br>✓ 5 Boosts/month<br>✓ Priority support</div><button class="gradient-btn" id="subscribePlusBtn" style="margin-top:12px;">Subscribe to Plus - $3.27/month</button></div>`;
+            content = `<div class="premium-card"><i class="fas fa-crown" style="font-size:2rem; color:gold;"></i><h3>Get Verified</h3><p>Blue check badge & priority</p><button class="small-glass" id="verifyBtn">Upgrade Now</button><hr><div style="text-align:left; padding:8px;"><strong>Free Plan:</strong><br>• 20 swipes/day<br>• Basic filters<br>• Standard support<br><br><strong style="color:#22c55e;">Gold ($3.27/month):</strong><br>✓ Unlimited swipes<br>✓ See who liked you<br>✓ Rewind last swipe<br>✓ 1 Boost/month<br>✓ No ads<br><br><strong>Platinum ($12.99/month):</strong><br>✓ All Gold features<br>✓ Read receipts<br>✓ Incognito mode<br>✓ Travel mode<br>✓ 5 Boosts/month<br>✓ Priority support</div><button class="gradient-btn" id="subscribePlusBtn" style="margin-top:12px;">Subscribe to Gold - $3.27/month</button><button class="gradient-btn" id="subscribePlatinumBtn" style="margin-top:12px;">Subscribe to Platinum - $12.99/month</button></div>`;
         } else {
             content = `<div class="settings-item">FAQ</div><div class="settings-item">Contact support</div>`;
         }
@@ -520,8 +760,9 @@
         }
         
         if (section === 'premium') {
-            document.getElementById('verifyBtn')?.addEventListener('click', () => alert("Premium upgrade (UI demo)"));
-            document.getElementById('subscribePlusBtn')?.addEventListener('click', () => alert("✨ Plus subscription ($3.27/month) - Unlimited swipes, see who liked you, and more! ✨"));
+            document.getElementById('verifyBtn')?.addEventListener('click', () => showUpgradeModal());
+            document.getElementById('subscribePlusBtn')?.addEventListener('click', () => showUpgradeModal());
+            document.getElementById('subscribePlatinumBtn')?.addEventListener('click', () => showUpgradeModal());
         }
         
         document.getElementById('backFromSettings').onclick = () => {
