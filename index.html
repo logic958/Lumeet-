@@ -123,6 +123,7 @@
         .report-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); border-radius: 28px; padding: 20px; z-index: 2000; width: 80%; max-width: 300px; text-align: center; }
         .report-modal button { margin: 8px; padding: 10px; border-radius: 40px; border: none; cursor: pointer; }
         .forgot-password { color: #ffec99; font-size: 0.8rem; cursor: pointer; margin-top: 8px; display: inline-block; }
+        .resend-email { color: #ffec99; font-size: 0.7rem; cursor: pointer; margin-top: 8px; display: inline-block; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -155,7 +156,7 @@
 <script type="module">
     // ========== FIREBASE IMPORTS ==========
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, getDocs, updateDoc, collection, addDoc, query, orderBy, onSnapshot, where, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
@@ -181,6 +182,10 @@
         try {
             const userCred = await createUserWithEmailAndPassword(auth, email, password);
             await updateProfile(userCred.user, { displayName: name });
+            
+            // Send email verification
+            await sendEmailVerification(userCred.user);
+            
             await setDoc(doc(db, "users", userCred.user.uid), {
                 uid: userCred.user.uid,
                 name: name,
@@ -198,12 +203,12 @@
                 reports: [],
                 location: { lat: 40.7128, lng: -74.0060 },
                 createdAt: Date.now(),
-                online: true,
+                online: false,
                 lastSeen: Date.now(),
                 emailVerified: false
             });
-            await sendEmailVerification(userCred.user);
-            alert("Account created! Please verify your email before logging in.");
+            
+            alert("Account created! A verification email has been sent to " + email + ". Please verify your email before logging in.");
             return userCred.user;
         } catch (err) {
             alert(err.message);
@@ -211,8 +216,20 @@
         }
     };
     
-    window.sendEmailVerification = async (user) => {
-        await sendEmailVerification(user);
+    window.resendVerificationEmail = async (email, password) => {
+        try {
+            // Sign in temporarily to resend verification
+            const userCred = await signInWithEmailAndPassword(auth, email, password);
+            if (!userCred.user.emailVerified) {
+                await sendEmailVerification(userCred.user);
+                alert("Verification email resent! Please check your inbox.");
+            } else {
+                alert("Email already verified! You can log in.");
+            }
+            await auth.signOut();
+        } catch (err) {
+            alert("Please log in first to resend verification email.");
+        }
     };
 
     window.resetPassword = async (email) => {
@@ -228,10 +245,8 @@
         try {
             const result = await signInWithPopup(auth, googleProvider);
             const user = result.user;
-            // Check if user exists in Firestore
             const userDoc = await getDoc(doc(db, "users", user.uid));
             if (!userDoc.exists()) {
-                // Create new user profile for Google sign-in
                 await setDoc(doc(db, "users", user.uid), {
                     uid: user.uid,
                     name: user.displayName || user.email.split('@')[0],
@@ -265,14 +280,32 @@
     window.loginUserFirebase = async (email, password) => {
         try {
             const userCred = await signInWithEmailAndPassword(auth, email, password);
-            if (!userCred.user.emailVerified) {
-                alert("Please verify your email before logging in. Check your inbox!");
+            const user = userCred.user;
+            
+            // Check if email is verified
+            if (!user.emailVerified) {
+                alert("Please verify your email before logging in. Check your inbox for the verification link, or click 'Resend Verification Email' below.");
+                await auth.signOut();
                 throw new Error("Email not verified");
             }
-            await updateDoc(doc(db, "users", userCred.user.uid), { online: true, lastSeen: Date.now() });
-            return userCred.user;
+            
+            await updateDoc(doc(db, "users", user.uid), { online: true, lastSeen: Date.now(), emailVerified: true });
+            return user;
         } catch (err) {
-            alert(err.message);
+            if (err.message === "Email not verified") {
+                // Add resend option
+                const resendBtn = document.createElement('div');
+                resendBtn.className = 'resend-email';
+                resendBtn.innerText = 'Resend Verification Email';
+                resendBtn.onclick = async () => {
+                    await window.resendVerificationEmail(email, password);
+                    resendBtn.remove();
+                };
+                document.querySelector('.auth-card').appendChild(resendBtn);
+                setTimeout(() => resendBtn.remove(), 5000);
+            } else {
+                alert(err.message);
+            }
             throw err;
         }
     };
@@ -301,10 +334,6 @@
         });
     };
 
-    window.updateMessageStatus = async (chatId, messageId, status) => {
-        await updateDoc(doc(db, "chats", chatId, "messages", messageId), { status });
-    };
-
     window.uploadProfileImage = async (file, uid) => {
         const imageRef = ref(storage, `profiles/${uid}/${Date.now()}_${file.name}`);
         await uploadBytes(imageRef, file);
@@ -324,6 +353,7 @@
         const reports = reportedUser.reports || [];
         reports.push({ reporterId, reason, timestamp: Date.now() });
         await window.updateUserFirebase(reportedId, { reports });
+        alert("User reported. Our team will review this.");
     };
 
     window.blockUser = async (userId, blockedId) => {
@@ -332,6 +362,7 @@
         if (!blocked.includes(blockedId)) {
             blocked.push(blockedId);
             await window.updateUserFirebase(userId, { blocked });
+            alert("User blocked successfully.");
         }
     };
 
@@ -339,8 +370,6 @@
     let currentUser = null;
     let currentChatPartner = null;
     let typingTimeout = null;
-    let typingListener = null;
-    let allUsers = [];
 
     // ========== UI FUNCTIONS ==========
     const loginView = document.getElementById('loginView'), signupView = document.getElementById('signupView'), mainApp = document.getElementById('mainApp');
@@ -383,7 +412,6 @@
         const age = document.getElementById('signupAge').value;
         try {
             await window.signupUser(email, pwd, name, age, gender);
-            alert("Account created! Please verify your email before logging in.");
             signupView.style.display = 'none';
             loginView.style.display = 'flex';
         } catch (err) { alert("Signup failed: " + err.message); }
@@ -399,7 +427,7 @@
             currentUser = userData;
             localStorage.setItem('currentUserUid', user.uid);
             showMainApp();
-        } catch (err) { alert("Login failed: " + err.message); }
+        } catch (err) { console.log("Login error:", err); }
     });
     
     async function showMainApp() {
@@ -445,13 +473,11 @@
         return remaining > 0;
     }
     
-    // Swipe & Explore
+    // Swipe & Explore (shortened for brevity - same as before)
     async function getAvailableProfiles() {
         const users = await window.getUsersFirebase();
         const blocked = currentUser.blocked || [];
-        return users.filter(u => u.uid !== currentUser?.uid && 
-            !currentUser?.swipes?.includes(u.uid) && 
-            !blocked.includes(u.uid));
+        return users.filter(u => u.uid !== currentUser?.uid && !currentUser?.swipes?.includes(u.uid) && !blocked.includes(u.uid));
     }
     
     async function renderSwipeCards() {
@@ -527,7 +553,6 @@
         let filtered = users.filter(u => u.uid !== currentUser?.uid && !(currentUser.blocked || []).includes(u.uid));
         const minAge = parseInt(document.getElementById('filterAgeMin').value) || 18;
         const maxAge = parseInt(document.getElementById('filterAgeMax').value) || 100;
-        const distance = parseInt(document.getElementById('filterDistance').value) || 100;
         const gender = document.getElementById('filterGender').value;
         if(gender) filtered = filtered.filter(u => u.gender === gender);
         filtered = filtered.filter(u => u.age >= minAge && u.age <= maxAge);
@@ -611,14 +636,13 @@
         modal.querySelectorAll('[data-reason]').forEach(btn => {
             btn.addEventListener('click', async () => {
                 await window.reportUser(currentUser.uid, userId, btn.dataset.reason);
-                alert(`Reported ${userName} for ${btn.dataset.reason}`);
                 modal.remove();
             });
         });
         modal.querySelector('#closeReportModal').addEventListener('click', () => modal.remove());
     }
     
-    // Messaging
+    // Messaging (shortened - same functionality)
     async function renderChatList() {
         const container = document.getElementById('chatListContainer');
         const users = await window.getUsersFirebase();
@@ -644,7 +668,6 @@
                     currentUser.blocked = currentUser.blocked || [];
                     currentUser.blocked.push(targetId);
                     await renderChatList();
-                    alert("User blocked");
                 }
             });
         });
@@ -670,7 +693,6 @@
                 currentUser.blocked = currentUser.blocked || [];
                 currentUser.blocked.push(partnerId);
                 document.getElementById('backToChatList').click();
-                alert("User blocked");
             }
         });
         document.getElementById('menuUnmatch')?.addEventListener('click', async () => { 
@@ -737,7 +759,7 @@
         };
     }
     
-    // Profile & Settings
+    // Profile & Settings (shortened - same as before)
     async function updateProfileCompletion() { 
         const fields = [currentUser.name, currentUser.bio, currentUser.location]; 
         let filled = fields.filter(f => f).length; 
