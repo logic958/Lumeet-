@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ff4d6d">
     <title>Lumeet | Real‑time Chat + Online Status</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -908,6 +910,14 @@
     if(localStorage.getItem('currentUserUid')) { await loadCurrentUser(); if(currentUser) showMainApp(); else document.getElementById('loginView').style.display = 'flex'; } else { document.getElementById('loginView').style.display = 'flex'; }
     document.querySelectorAll('.toggle-pwd').forEach(icon=>{ icon.addEventListener('click',function(){ let target=document.getElementById(this.dataset.target); if(target.type==='password') target.type='text'; else target.type='password'; this.classList.toggle('fa-eye');}); });
     document.getElementById('applyFilterBtn')?.addEventListener('click',()=>renderExplore());
+</script>
+
+<script>
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/service-worker.js")
+            .then(() => console.log("Service Worker Registered"))
+            .catch(err => console.log("SW error", err));
+    }
 </script>
 </body>
 </html>
