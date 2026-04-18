@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ========== FULL ORIGINAL CSS (restored) ========== */
+        /* ========== FULL ORIGINAL CSS (kept) ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Poppins', sans-serif; }
         body { min-height: 100vh; background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format') center/cover no-repeat fixed; }
         .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.25); backdrop-filter: blur(4px); z-index: -1; }
@@ -132,11 +132,12 @@
         .upgrade-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); border-radius: 32px; padding: 24px; z-index: 2001; width: 90%; max-width: 360px; text-align: center; }
         .upgrade-plan { background: rgba(255,255,255,0.1); border-radius: 24px; padding: 16px; margin: 12px 0; cursor: pointer; transition: 0.2s; }
         .upgrade-plan:hover { background: rgba(255,255,255,0.2); transform: scale(1.02); }
-        .premium-badge { background: linear-gradient(135deg, #ffd700, #ffb347); color: #1e2a1e; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: bold; display: inline-block; margin-left: 8px; }
         .admin-panel { background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); border-radius: 32px; padding: 20px; margin-top: 20px; }
-        .admin-stats { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
+        .admin-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
         .stat-card { background: rgba(255,255,255,0.1); border-radius: 24px; padding: 12px; text-align: center; }
-        .admin-report-item, .admin-appeal-item { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 8px; }
+        .admin-section { margin-top: 16px; }
+        .admin-section h4 { color: white; margin-bottom: 8px; }
+        .admin-item { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 8px; font-size: 0.8rem; }
         .stripe-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); border-radius: 32px; padding: 24px; z-index: 2002; width: 90%; max-width: 400px; text-align: center; }
         .stripe-card { background: #fff; border-radius: 16px; padding: 16px; margin: 12px 0; color: #000; text-align: left; }
         .visibility-score { background: rgba(0,0,0,0.4); border-radius: 40px; padding: 4px 12px; font-size: 0.7rem; display: inline-block; }
@@ -148,7 +149,7 @@
 <body>
 <div class="bg-overlay"></div>
 
-<!-- LOGIN / SIGNUP (full) -->
+<!-- LOGIN / SIGNUP -->
 <div id="loginView" class="auth-container"><div class="glass-card auth-card"><div class="logo-area"><i class="fas fa-heart logo-icon"></i><h1>Lumeet</h1><p>where sparks glow</p></div><form id="loginFormElem"><div class="input-group"><i class="fas fa-envelope input-icon"></i><input type="email" id="loginEmail" placeholder="Email" required></div><div class="input-group"><i class="fas fa-lock input-icon"></i><input type="password" id="loginPassword" placeholder="Password"><i class="fas fa-eye-slash toggle-pwd" data-target="loginPassword"></i></div><button type="submit" class="gradient-btn">Log In</button><div class="forgot-password" id="forgotPasswordBtn">Forgot Password?</div><div class="divider">or</div><button type="button" id="googleSignInBtn" class="gradient-btn google-btn"><i class="fab fa-google"></i> Sign in with Google</button><p class="switch-auth">No account? <a href="#" id="goToSignupLink">Sign up</a></p>
         <div class="owner-credit"><span>Website Owner: Crayne Sakala</span><i class="fas fa-check-circle gold-check"></i></div>
     </form></div></div>
@@ -156,12 +157,12 @@
         <div class="owner-credit"><span>Website Owner: Crayne Sakala</span><i class="fas fa-check-circle gold-check"></i></div>
     </form></div></div>
 
-<!-- MAIN APP (complete) -->
+<!-- MAIN APP -->
 <div id="mainApp" class="app-main">
     <div id="swipeView" class="view"><h2 style="color:white; text-align:center;">Swipe</h2><div id="swipeCounter" class="swipe-counter">Swipes remaining: 20</div><div id="visibilityScore" class="visibility-score" style="margin:8px auto;">Profile seen by 0 today</div><div id="cardsStack" class="cards-container"></div><div class="action-buttons"><div class="action-circle pass-btn" id="passBtn"><i class="fas fa-times fa-2x"></i></div><div class="action-circle like-btn" id="likeBtn"><i class="fas fa-heart fa-2x"></i></div></div><div id="matchToast" style="position:fixed; bottom:30%; left:10%; right:10%; background:gold; border-radius:50px; text-align:center; padding:12px; display:none; z-index:200;">✨ It's a match! ✨</div></div>
     <div id="exploreView" class="view"><h2 style="color:white;">Discover</h2><div style="display:flex; gap:8px; flex-wrap:wrap;"><input type="number" id="filterAgeMin" placeholder="Min age" style="background:rgba(255,255,255,0.2); border-radius:40px; padding:8px; width:80px;"><input type="number" id="filterAgeMax" placeholder="Max age" style="background:rgba(255,255,255,0.2); border-radius:40px; padding:8px; width:80px;"><input type="number" id="filterDistance" placeholder="Distance (km)" style="background:rgba(255,255,255,0.2); border-radius:40px; padding:8px; width:100px;"><select id="filterIntent" style="background:rgba(255,255,255,0.2); border-radius:40px;"><option value="">Intent (any)</option><option>Serious</option><option>Casual</option><option>Friends</option></select><select id="filterGender" style="background:rgba(255,255,255,0.2); border-radius:40px;"><option value="">Any gender</option><option>Female</option><option>Male</option></select><button id="applyFilterBtn" class="small-glass">Filter</button></div><div id="matchQueue" style="background:rgba(0,0,0,0.3); border-radius:28px; padding:12px; margin-top:12px;"><h3 style="color:white;">People who liked you (last 5)</h3><div id="pendingLikesList"></div></div><div id="exploreList" class="explore-grid"></div></div>
     <div id="messagesView" class="view"><div id="chatListContainer" class="chat-list-container"></div><div id="chatScreenContainer" class="chat-screen-container" style="display:none;"></div></div>
-    <div id="profileView" class="view"><div class="glass-card" style="padding:20px;"><div style="text-align:right;"><i class="fas fa-cog" id="openSettingsBtn" style="font-size:1.5rem; color:white; cursor:pointer;"></i></div><div class="profile-top"><div style="position:relative; display:inline-block;"><img id="profileAvatar" class="profile-pic-large" src=""><div class="camera-overlay" id="changePhotoBtn"><i class="fas fa-camera"></i></div><input type="file" id="photoUploadInput" style="display:none;" accept="image/*"></div><h2 style="color:white; margin-top:8px;"><span id="profileUsername"></span><i class="fas fa-check-circle verified-badge" style="display:none;"></i><span id="premiumBadge" class="premium-badge" style="display:none;">⭐ Premium</span></h2><p id="profileStatus" style="color:#ccc;"></p><div class="last-seen-preview" id="lastSeenPreview"></div><div class="progress-bar"><div class="progress-fill" id="profileProgress"></div></div><div class="stats-row"><div><strong id="matchesCount">0</strong><br>Matches</div><div><strong id="likesCount">0</strong><br>Likes</div><div><strong id="viewsCount">0</strong><br>Views</div></div><div class="action-buttons-row"><button id="editProfileBtn"><i class="fas fa-edit"></i> Edit Profile</button><button id="shareProfileBtn"><i class="fas fa-share-alt"></i> Share</button><button id="boostProfileBtn"><i class="fas fa-rocket"></i> Boost</button><button id="upgradeBtn" class="gradient-btn" style="background: linear-gradient(135deg, #ffd700, #ffb347);">Upgrade</button><button id="verifyIdentityBtn" class="small-glass" style="background:#22c55e;">Verify ID</button><button id="adminDirectBtn" class="small-glass" style="background:#ff4d6d;">Admin</button><button id="eventsBtn" class="small-glass">📅 Events</button></div></div><div class="settings-list" id="settingsListContainer"></div><button id="logoutBtnProfile" style="background:rgba(255,80,80,0.5); border:none; border-radius:60px; padding:12px; width:100%; margin-top:20px; color:white;">Logout</button></div></div>
+    <div id="profileView" class="view"><div class="glass-card" style="padding:20px;"><div style="text-align:right;"><i class="fas fa-cog" id="openSettingsBtn" style="font-size:1.5rem; color:white; cursor:pointer;"></i></div><div class="profile-top"><div style="position:relative; display:inline-block;"><img id="profileAvatar" class="profile-pic-large" src=""><div class="camera-overlay" id="changePhotoBtn"><i class="fas fa-camera"></i></div><input type="file" id="photoUploadInput" style="display:none;" accept="image/*"></div><h2 style="color:white; margin-top:8px;"><span id="profileUsername"></span><i class="fas fa-check-circle verified-badge" style="display:none;"></i></h2><p id="profileStatus" style="color:#ccc;"></p><div class="last-seen-preview" id="lastSeenPreview"></div><div class="progress-bar"><div class="progress-fill" id="profileProgress"></div></div><div class="stats-row"><div><strong id="matchesCount">0</strong><br>Matches</div><div><strong id="likesCount">0</strong><br>Likes</div><div><strong id="viewsCount">0</strong><br>Views</div></div><div class="action-buttons-row"><button id="editProfileBtn"><i class="fas fa-edit"></i> Edit Profile</button><button id="shareProfileBtn"><i class="fas fa-share-alt"></i> Share</button><button id="boostProfileBtn"><i class="fas fa-rocket"></i> Boost</button><button id="upgradeBtn" class="gradient-btn" style="background: linear-gradient(135deg, #ffd700, #ffb347);">Upgrade</button><button id="verifyIdentityBtn" class="small-glass" style="background:#22c55e;">Verify ID</button><button id="adminDirectBtn" class="small-glass" style="background:#ff4d6d;">Admin</button><button id="eventsBtn" class="small-glass">📅 Events</button></div></div><div class="settings-list" id="settingsListContainer"></div><button id="logoutBtnProfile" style="background:rgba(255,80,80,0.5); border:none; border-radius:60px; padding:12px; width:100%; margin-top:20px; color:white;">Logout</button></div></div>
     <div id="editProfileView" class="view" style="display:none;"><div class="glass-card" style="padding:20px;"><div class="back-header"><button id="backFromEdit"><i class="fas fa-arrow-left"></i></button><h2 style="color:white;">Edit Profile</h2></div><div class="edit-profile-form"><div class="photo-grid" id="photoGrid"></div><input type="text" id="editName" placeholder="Name"><textarea id="editBio" rows="2" placeholder="Bio"></textarea><select id="editGender"><option>Female</option><option>Male</option></select><input type="number" id="editAge" placeholder="Age"><input type="text" id="editLocation" placeholder="Location"><label style="color:white;">Interests (add tags):</label><div class="interests-tag-input" id="interestsContainer"></div><input type="text" id="newInterestInput" placeholder="Type interest and press Enter" style="margin-top:4px;"><label style="color:white;">Looking for:</label><select id="editIntent"><option>Serious</option><option>Casual</option><option>Friends</option></select><label style="color:white;">Video/voice intro:</label><input type="file" id="introUploadInput" accept="video/*,audio/*"><button id="uploadIntroBtn" class="small-glass">Upload intro</button><div id="introPreview"></div><button id="saveProfileChanges" class="gradient-btn" style="margin-top:16px;">Save Changes</button></div></div></div>
     <div id="settingsDetailView" class="view" style="display:none;"><div class="glass-card" style="padding:20px;"><div class="back-header"><button id="backFromSettings"><i class="fas fa-arrow-left"></i></button><h2 id="settingsTitle" style="color:white;">Settings</h2></div><div id="settingsDetailContent"></div></div></div>
     <div class="bottom-nav"><div class="nav-item" data-nav="swipe"><i class="fas fa-fire"></i><span>Swipe</span></div><div class="nav-item" data-nav="explore"><i class="fas fa-compass"></i><span>Explore</span></div><div class="nav-item" data-nav="messages"><i class="fas fa-comment-dots"></i><span>Chats</span></div><div class="nav-item" data-nav="profile"><i class="fas fa-user"></i><span>Profile</span></div></div>
@@ -195,6 +196,7 @@
     let currentChatPartner = null;
     let typingTimeout = null;
     let unsubscribeMessages = null;
+    let adminUnsubscribes = [];
 
     // ========== AUTH (full, with email verification) ==========
     window.signupUser = async (email, password, name, age, gender) => {
@@ -212,7 +214,7 @@
                 prefAgeMin: 18, prefAgeMax: 100, prefDistance: 50,
                 isPremium: false, premiumPlan: "free", premiumExpiresAt: 0,
                 features: { unlimitedSwipes: false, readReceipts: false, seeWhoLikedYou: false, boost: false },
-                verified: false, intent: "Serious", introUrl: ""
+                verified: false, intent: "Serious", introUrl: "", banned: false
             });
             alert("Account created! Verification email sent.");
             return userCred.user;
@@ -234,7 +236,7 @@
                     prefAgeMin: 18, prefAgeMax: 100, prefDistance: 50,
                     isPremium: false, premiumPlan: "free", premiumExpiresAt: 0,
                     features: { unlimitedSwipes: false, readReceipts: false, seeWhoLikedYou: false, boost: false },
-                    verified: false, intent: "Serious", introUrl: ""
+                    verified: false, intent: "Serious", introUrl: "", banned: false
                 });
             } else {
                 await updateDoc(doc(db, "users", user.uid), { lastSeen: Date.now(), emailVerified: true });
@@ -251,7 +253,7 @@
         } catch (err) { throw err; }
     };
 
-    // ========== NEW REAL FEATURES ==========
+    // ========== NEW REAL FEATURES (events, intro, appeals) ==========
     async function loadEvents() {
         const eventsSnap = await getDocs(query(collection(db, "events"), orderBy("date")));
         const events = eventsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -282,21 +284,55 @@
     let isAdminLoggedIn = false;
     async function renderAdminPanel() {
         if (!isAdminLoggedIn) return;
-        const usersSnap = await getDocs(collection(db, "users")), reportsSnap = await getDocs(collection(db, "reports")), appealsSnap = await getDocs(collection(db, "appeals"));
-        const totalUsers = usersSnap.size, premiumUsers = usersSnap.docs.filter(d => d.data().isPremium === true).length;
-        const appeals = appealsSnap.docs.map(d => ({ id: d.id, ...d.data() })), reports = reportsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-        let adminDiv = document.getElementById('adminPanelDiv');
-        if (!adminDiv) { adminDiv = document.createElement('div'); adminDiv.id = 'adminPanelDiv'; adminDiv.className = 'admin-panel'; document.getElementById('profileView').querySelector('.glass-card').appendChild(adminDiv); }
-        adminDiv.innerHTML = `<h3>👑 Admin Panel</h3><div class="admin-stats"><div class="stat-card">Total Users: ${totalUsers}</div><div class="stat-card">Premium: ${premiumUsers}</div></div><h4>Appeals</h4><div id="appealsList">${appeals.map(a => `<div class="admin-appeal-item"><strong>User ${a.userId}</strong>: ${a.reason}<br><button class="small-glass approve-appeal" data-id="${a.id}">Approve</button><button class="small-glass reject-appeal" data-id="${a.id}">Reject</button></div>`).join('')}</div><h4>Reports</h4><div>${reports.slice(0,3).map(r => `<div class="admin-report-item">${r.reportedId}: ${r.reason}</div>`).join('')}</div><button class="small-glass" id="adminLogoutBtn">Logout</button>`;
-        document.querySelectorAll('.approve-appeal').forEach(btn => btn.addEventListener('click', async () => { await updateDoc(doc(db, "appeals", btn.dataset.id), { status: "approved" }); renderAdminPanel(); }));
-        document.querySelectorAll('.reject-appeal').forEach(btn => btn.addEventListener('click', async () => { await updateDoc(doc(db, "appeals", btn.dataset.id), { status: "rejected" }); renderAdminPanel(); }));
-        document.getElementById('adminLogoutBtn').onclick = () => { isAdminLoggedIn = false; adminDiv.remove(); };
+        adminUnsubscribes.forEach(unsub => unsub());
+        adminUnsubscribes = [];
+        
+        const adminDiv = document.getElementById('adminPanelDiv') || (() => {
+            const div = document.createElement('div');
+            div.id = 'adminPanelDiv';
+            div.className = 'admin-panel';
+            document.getElementById('profileView').querySelector('.glass-card').appendChild(div);
+            return div;
+        })();
+        adminDiv.innerHTML = `<h3>👑 Admin Panel</h3><div class="admin-stats" id="adminStats"></div><div class="admin-section"><h4>🚫 Banned Users</h4><div id="bannedList"></div></div><div class="admin-section"><h4>📢 Appeals</h4><div id="appealsList"></div></div><div class="admin-section"><h4>⚠️ Reports</h4><div id="reportsList"></div></div><button class="small-glass" id="adminLogoutBtn">Logout</button>`;
+        
+        // Real-time users
+        const usersQuery = query(collection(db, "users"));
+        const unsubUsers = onSnapshot(usersQuery, (snap) => {
+            const users = snap.docs.map(d => d.data());
+            const totalUsers = users.length;
+            const premiumUsers = users.filter(u => u.isPremium === true).length;
+            const bannedUsers = users.filter(u => u.banned === true);
+            document.getElementById('adminStats').innerHTML = `<div class="stat-card">Total Users: ${totalUsers}</div><div class="stat-card">Premium: ${premiumUsers}</div><div class="stat-card">Banned: ${bannedUsers.length}</div>`;
+            document.getElementById('bannedList').innerHTML = bannedUsers.map(u => `<div class="admin-item">${u.name} (${u.email})</div>`).join('') || '<div class="admin-item">None</div>';
+        });
+        adminUnsubscribes.push(unsubUsers);
+        
+        // Real-time appeals
+        const appealsQuery = query(collection(db, "appeals"), orderBy("timestamp", "desc"));
+        const unsubAppeals = onSnapshot(appealsQuery, (snap) => {
+            const appeals = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            document.getElementById('appealsList').innerHTML = appeals.map(a => `<div class="admin-item"><strong>${a.userId}</strong>: ${a.reason} (${a.status})<br><button class="small-glass approve-appeal" data-id="${a.id}">Approve</button> <button class="small-glass reject-appeal" data-id="${a.id}">Reject</button></div>`).join('') || '<div class="admin-item">None</div>';
+            document.querySelectorAll('.approve-appeal').forEach(btn => btn.addEventListener('click', async () => { await updateDoc(doc(db, "appeals", btn.dataset.id), { status: "approved" }); }));
+            document.querySelectorAll('.reject-appeal').forEach(btn => btn.addEventListener('click', async () => { await updateDoc(doc(db, "appeals", btn.dataset.id), { status: "rejected" }); }));
+        });
+        adminUnsubscribes.push(unsubAppeals);
+        
+        // Real-time reports
+        const reportsQuery = query(collection(db, "reports"), orderBy("timestamp", "desc"));
+        const unsubReports = onSnapshot(reportsQuery, (snap) => {
+            const reports = snap.docs.map(d => d.data());
+            document.getElementById('reportsList').innerHTML = reports.map(r => `<div class="admin-item">Reported: ${r.reportedId} by ${r.reporterId} – Reason: ${r.reason}</div>`).join('') || '<div class="admin-item">None</div>';
+        });
+        adminUnsubscribes.push(unsubReports);
+        
+        document.getElementById('adminLogoutBtn').onclick = () => { isAdminLoggedIn = false; adminDiv.remove(); adminUnsubscribes.forEach(unsub => unsub()); };
     }
 
-    // ========== CORE APP FUNCTIONS (restored from your original) ==========
+    // ========== CORE APP FUNCTIONS (restored from original) ==========
     async function getAvailableProfiles() {
         const users = await getDocs(collection(db, "users"));
-        return users.docs.map(d => d.data()).filter(u => u.uid !== currentUser.uid && !currentUser.swipes?.includes(u.uid) && !currentUser.blocked?.includes(u.uid));
+        return users.docs.map(d => d.data()).filter(u => u.uid !== currentUser.uid && !currentUser.swipes?.includes(u.uid) && !currentUser.blocked?.includes(u.uid) && u.banned !== true);
     }
     function computeCompatibility(user) {
         let shared = (currentUser.interests || []).filter(i => (user.interests || []).includes(i)).length;
@@ -359,7 +395,7 @@
     }
     async function renderExplore() {
         let users = await getDocs(collection(db, "users"));
-        let filtered = users.docs.map(d => d.data()).filter(u => u.uid !== currentUser.uid && !currentUser.blocked?.includes(u.uid));
+        let filtered = users.docs.map(d => d.data()).filter(u => u.uid !== currentUser.uid && !currentUser.blocked?.includes(u.uid) && u.banned !== true);
         const minAge = parseInt(document.getElementById('filterAgeMin').value) || 18;
         const maxAge = parseInt(document.getElementById('filterAgeMax').value) || 100;
         const maxDistance = parseInt(document.getElementById('filterDistance').value) || 100;
@@ -368,7 +404,6 @@
         if(gender) filtered = filtered.filter(u => u.gender === gender);
         if(intent) filtered = filtered.filter(u => u.intent === intent);
         filtered = filtered.filter(u => u.age >= minAge && u.age <= maxAge);
-        // distance filter (simplified)
         if(currentUser.location && currentUser.location.lat) {
             const haversine = (loc1, loc2) => {
                 if(!loc1 || !loc2) return Infinity;
@@ -380,7 +415,6 @@
             };
             filtered = filtered.filter(u => u.location && haversine(currentUser.location, u.location) <= maxDistance);
         }
-        // pending likes (free shows last 5)
         const pendingLikes = users.docs.map(d => d.data()).filter(u => u.swipes && u.swipes.includes(currentUser.uid) && !currentUser.swipes?.includes(u.uid));
         const matchQueueDiv = document.getElementById('matchQueue');
         if(currentUser.features?.seeWhoLikedYou === true) {
@@ -444,7 +478,7 @@
         const matches = currentUser.matches || [];
         if(matches.length === 0){ container.innerHTML = `<div class="glass-card">No matches yet. Start swiping!</div>`; return; }
         const users = (await getDocs(collection(db, "users"))).docs.map(d => d.data());
-        const matchedUsers = users.filter(u => matches.includes(u.uid));
+        const matchedUsers = users.filter(u => matches.includes(u.uid) && u.banned !== true);
         container.innerHTML = matchedUsers.map(m => `
             <div class="chat-list-item" data-id="${m.uid}">
                 <div style="position:relative;"><img class="avatar" src="${m.profilePic}">${m.privacyOnlineStatus !== false && (Date.now() - (m.lastSeen||0) < 60000) ? '<span class="online-dot"></span>' : ''}</div>
@@ -559,8 +593,7 @@
         updateProfileCompletion();
         if(currentUser.verified) document.querySelector('.verified-badge').style.display = 'inline-block';
         else document.querySelector('.verified-badge').style.display = 'none';
-        if(currentUser.isPremium) document.getElementById('premiumBadge').style.display = 'inline-block';
-        else document.getElementById('premiumBadge').style.display = 'none';
+        // No premium badge text – only verified tick
         const boostBtn = document.getElementById('boostProfileBtn');
         if(currentUser.features?.boost === true) boostBtn.onclick = () => alert("Boost activated!");
         else boostBtn.onclick = () => alert("Upgrade to Platinum to unlock Boost.");
