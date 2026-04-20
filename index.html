@@ -6,7 +6,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ff4d6d">
     <meta name="google-site-verification" content="google6471dee0a647ffc0" />
-    <title>Lumeet | Complete Dating App</title>
+    <title>MEET | Complete Dating App</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -168,22 +168,151 @@
 <div class="bg-overlay"></div>
 
 <!-- LOGIN / SIGNUP -->
-<div id="loginView" class="auth-container"><div class="glass-card auth-card"><div class="logo-area"><i class="fas fa-heart logo-icon"></i><h1>Lumeet</h1><p>where sparks glow</p></div><form id="loginFormElem"><div class="input-group"><i class="fas fa-envelope input-icon"></i><input type="email" id="loginEmail" placeholder="Email" required></div><div class="input-group"><i class="fas fa-lock input-icon"></i><input type="password" id="loginPassword" placeholder="Password"><i class="fas fa-eye-slash toggle-pwd" data-target="loginPassword"></i></div><button type="submit" class="gradient-btn">Log In</button><div class="forgot-password" id="forgotPasswordBtn">Forgot Password?</div><div class="divider">or</div><button type="button" id="googleSignInBtn" class="gradient-btn google-btn"><i class="fab fa-google"></i> Sign in with Google</button><p class="switch-auth">No account? <a href="#" id="goToSignupLink">Sign up</a></p>
-        <div class="owner-credit"><span>Website Owner: Crayne Sakala</span><i class="fas fa-check-circle gold-check"></i></div>
-    </form></div></div>
-<div id="signupView" class="auth-container" style="display:none;"><div class="glass-card auth-card"><h2 style="color:white;">Create account</h2><form id="signupFormElem"><div class="input-group"><i class="fas fa-user input-icon"></i><input type="text" id="signupName" placeholder="Full name"></div><div class="input-group"><i class="fas fa-envelope input-icon"></i><input type="email" id="signupEmail" placeholder="Email"></div><div class="input-group"><i class="fas fa-lock input-icon"></i><input type="password" id="signupPassword" placeholder="Password"></div><div class="input-group"><i class="fas fa-check-circle input-icon"></i><input type="password" id="confirmPwd" placeholder="Confirm password"></div><div class="input-group"><i class="fas fa-venus-mars input-icon"></i><select id="signupGender"><option>Female</option><option>Male</option></select></div><div class="input-group"><i class="fas fa-calendar input-icon"></i><input type="number" id="signupAge" placeholder="Age"></div><button type="submit" class="gradient-btn">Create account</button><div class="divider">or</div><button type="button" id="googleSignUpBtn" class="gradient-btn google-btn"><i class="fab fa-google"></i> Sign up with Google</button><p class="switch-auth">Already a member? <a href="#" id="goToLoginLink">Log in</a></p>
-        <div class="owner-credit"><span>Website Owner: Crayne Sakala</span><i class="fas fa-check-circle gold-check"></i></div>
-    </form></div></div>
+<div id="loginView" class="auth-container">
+    <div class="glass-card auth-card">
+        <div class="logo-area">
+            <i class="fas fa-heart logo-icon"></i>
+            <h1>MEET</h1>
+            <p>where sparks glow</p>
+        </div>
+        <form id="loginFormElem">
+            <div class="input-group">
+                <i class="fas fa-envelope input-icon"></i>
+                <input type="email" id="loginEmail" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" id="loginPassword" placeholder="Password">
+                <i class="fas fa-eye-slash toggle-pwd" data-target="loginPassword"></i>
+            </div>
+            <button type="submit" class="gradient-btn">Log In</button>
+            <div class="forgot-password" id="forgotPasswordBtn">Forgot Password?</div>
+            <div class="forgot-password" id="appealBanBtn" style="margin-top:4px;">Banned? Appeal here</div>
+            <div class="divider">or</div>
+            <button type="button" id="googleSignInBtn" class="gradient-btn google-btn"><i class="fab fa-google"></i> Sign in with Google</button>
+            <p class="switch-auth">No account? <a href="#" id="goToSignupLink">Sign up</a></p>
+            <div class="owner-credit"><span>Website Owner: Crayne Sakala</span><i class="fas fa-check-circle gold-check"></i></div>
+        </form>
+    </div>
+</div>
+<div id="signupView" class="auth-container" style="display:none;">
+    <div class="glass-card auth-card">
+        <h2 style="color:white;">Create account</h2>
+        <form id="signupFormElem">
+            <div class="input-group"><i class="fas fa-user input-icon"></i><input type="text" id="signupName" placeholder="Full name"></div>
+            <div class="input-group"><i class="fas fa-envelope input-icon"></i><input type="email" id="signupEmail" placeholder="Email"></div>
+            <div class="input-group"><i class="fas fa-lock input-icon"></i><input type="password" id="signupPassword" placeholder="Password"></div>
+            <div class="input-group"><i class="fas fa-check-circle input-icon"></i><input type="password" id="confirmPwd" placeholder="Confirm password"></div>
+            <div class="input-group"><i class="fas fa-venus-mars input-icon"></i><select id="signupGender"><option>Female</option><option>Male</option></select></div>
+            <div class="input-group"><i class="fas fa-calendar input-icon"></i><input type="number" id="signupAge" placeholder="Age"></div>
+            <button type="submit" class="gradient-btn">Create account</button>
+            <div class="divider">or</div>
+            <button type="button" id="googleSignUpBtn" class="gradient-btn google-btn"><i class="fab fa-google"></i> Sign up with Google</button>
+            <p class="switch-auth">Already a member? <a href="#" id="goToLoginLink">Log in</a></p>
+            <div class="owner-credit"><span>Website Owner: Crayne Sakala</span><i class="fas fa-check-circle gold-check"></i></div>
+        </form>
+    </div>
+</div>
 
 <!-- MAIN APP -->
 <div id="mainApp" class="app-main">
-    <div id="swipeView" class="view"><h2 style="color:white; text-align:center;">Swipe</h2><div id="swipeCounter" class="swipe-counter">Swipes remaining: 20</div><div id="visibilityScore" class="visibility-score" style="margin:8px auto;">Profile seen by 0 today</div><div id="cardsStack" class="cards-container"></div><div class="action-buttons"><div class="action-circle pass-btn" id="passBtn"><i class="fas fa-times fa-2x"></i></div><div class="action-circle like-btn" id="likeBtn"><i class="fas fa-heart fa-2x"></i></div></div><div id="matchToast" style="position:fixed; bottom:30%; left:10%; right:10%; background:gold; border-radius:50px; text-align:center; padding:12px; display:none; z-index:200;">✨ It's a match! ✨</div></div>
-    <div id="exploreView" class="view"><h2 style="color:white;">Discover</h2><div style="display:flex; gap:8px; flex-wrap:wrap;"><input type="number" id="filterAgeMin" placeholder="Min age" style="background:rgba(255,255,255,0.2); border-radius:40px; padding:8px; width:80px;"><input type="number" id="filterAgeMax" placeholder="Max age" style="background:rgba(255,255,255,0.2); border-radius:40px; padding:8px; width:80px;"><input type="number" id="filterDistance" placeholder="Distance (km)" style="background:rgba(255,255,255,0.2); border-radius:40px; padding:8px; width:100px;"><select id="filterIntent" style="background:rgba(255,255,255,0.2); border-radius:40px;"><option value="">Intent (any)</option><option>Serious</option><option>Casual</option><option>Friends</option></select><select id="filterGender" style="background:rgba(255,255,255,0.2); border-radius:40px;"><option value="">Any gender</option><option>Female</option><option>Male</option></select><button id="applyFilterBtn" class="small-glass">Filter</button></div><div id="matchQueue" style="background:rgba(0,0,0,0.3); border-radius:28px; padding:12px; margin-top:12px;"><h3 style="color:white;">People who liked you (last 5)</h3><div id="pendingLikesList"></div></div><div id="exploreList" class="explore-grid"></div></div>
-    <div id="messagesView" class="view"><div style="padding: 12px 16px; background: rgba(0,0,0,0.3); border-radius: 32px 32px 0 0; text-align: center;"><h3 style="color:white; margin:0;">Lumeet</h3></div><div id="chatListContainer" class="chat-list-container"></div><div id="chatScreenContainer" class="chat-screen-container" style="display:none;"></div></div>
-    <div id="profileView" class="view"><div class="glass-card" style="padding:20px;"><div style="text-align:right;"><i class="fas fa-cog" id="openSettingsBtn" style="font-size:1.5rem; color:white; cursor:pointer;"></i></div><div class="profile-top"><div style="position:relative; display:inline-block;"><img id="profileAvatar" class="profile-pic-large" src=""><div class="camera-overlay" id="changePhotoBtn"><i class="fas fa-camera"></i></div><input type="file" id="photoUploadInput" style="display:none;" accept="image/*"></div><h2 style="color:white; margin-top:8px;"><span id="profileUsername"></span><i class="fas fa-check-circle verified-badge" style="display:none;"></i></h2><p id="profileStatus" style="color:#ccc;"></p><div class="last-seen-preview" id="lastSeenPreview"></div><div class="progress-bar"><div class="progress-fill" id="profileProgress"></div></div><div class="stats-row"><div><strong id="matchesCount">0</strong><br>Matches</div><div><strong id="likesCount">0</strong><br>Likes</div><div><strong id="viewsCount">0</strong><br>Views</div></div><div class="action-buttons-row"><button id="editProfileBtn"><i class="fas fa-edit"></i> Edit Profile</button><button id="shareProfileBtn"><i class="fas fa-share-alt"></i> Share</button><button id="boostProfileBtn"><i class="fas fa-rocket"></i> Boost</button></div></div><div class="settings-list" id="settingsListContainer"></div><button id="logoutBtnProfile" style="background:rgba(255,80,80,0.5); border:none; border-radius:60px; padding:12px; width:100%; margin-top:20px; color:white;">Logout</button></div></div>
-    <div id="editProfileView" class="view" style="display:none;"><div class="glass-card" style="padding:20px;"><div class="back-header"><button id="backFromEdit"><i class="fas fa-arrow-left"></i></button><h2 style="color:white;">Edit Profile</h2></div><div class="edit-profile-form"><div class="photo-grid" id="photoGrid"></div><input type="text" id="editName" placeholder="Name"><textarea id="editBio" rows="2" placeholder="Bio"></textarea><select id="editGender"><option>Female</option><option>Male</option></select><input type="number" id="editAge" placeholder="Age"><input type="text" id="editLocation" placeholder="Location"><label style="color:white;">Interests (add tags):</label><div class="interests-tag-input" id="interestsContainer"></div><input type="text" id="newInterestInput" placeholder="Type interest and press Enter" style="margin-top:4px;"><label style="color:white;">Looking for:</label><select id="editIntent"><option>Serious</option><option>Casual</option><option>Friends</option></select><label style="color:white;">Video/voice intro:</label><input type="file" id="introUploadInput" accept="video/*,audio/*"><button id="uploadIntroBtn" class="small-glass">Upload intro</button><div id="introPreview"></div><button id="saveProfileChanges" class="gradient-btn" style="margin-top:16px;">Save Changes</button></div></div></div>
-    <div id="settingsDetailView" class="view" style="display:none;"><div class="glass-card" style="padding:20px;"><div class="back-header"><button id="backFromSettings"><i class="fas fa-arrow-left"></i></button><h2 id="settingsTitle" style="color:white;">Settings</h2></div><div id="settingsDetailContent"></div></div></div>
-    <div class="bottom-nav"><div class="nav-item" data-nav="swipe"><i class="fas fa-fire"></i><span>Swipe</span></div><div class="nav-item" data-nav="explore"><i class="fas fa-compass"></i><span>Explore</span></div><div class="nav-item" data-nav="messages"><i class="fas fa-comment-dots"></i><span>Chats</span></div><div class="nav-item" data-nav="profile"><i class="fas fa-user"></i><span>Profile</span></div></div>
+    <div id="swipeView" class="view">
+        <h2 style="color:white; text-align:center;">Swipe</h2>
+        <div id="swipeCounter" class="swipe-counter">Swipes remaining: 20</div>
+        <div id="visibilityScore" class="visibility-score" style="margin:8px auto;">Profile seen by 0 today</div>
+        <div id="cardsStack" class="cards-container"></div>
+        <div class="action-buttons">
+            <div class="action-circle pass-btn" id="passBtn"><i class="fas fa-times fa-2x"></i></div>
+            <div class="action-circle like-btn" id="likeBtn"><i class="fas fa-heart fa-2x"></i></div>
+        </div>
+        <div id="matchToast" style="position:fixed; bottom:30%; left:10%; right:10%; background:gold; border-radius:50px; text-align:center; padding:12px; display:none; z-index:200;">✨ It's a match! ✨</div>
+    </div>
+    <div id="exploreView" class="view">
+        <h2 style="color:white;">Discover</h2>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <input type="number" id="filterAgeMin" placeholder="Min age" style="background:rgba(255,255,255,0.2); border-radius:40px; padding:8px; width:80px;">
+            <input type="number" id="filterAgeMax" placeholder="Max age" style="background:rgba(255,255,255,0.2); border-radius:40px; padding:8px; width:80px;">
+            <input type="number" id="filterDistance" placeholder="Distance (km)" style="background:rgba(255,255,255,0.2); border-radius:40px; padding:8px; width:100px;">
+            <select id="filterIntent" style="background:rgba(255,255,255,0.2); border-radius:40px;"><option value="">Intent (any)</option><option>Serious</option><option>Casual</option><option>Friends</option></select>
+            <select id="filterGender" style="background:rgba(255,255,255,0.2); border-radius:40px;"><option value="">Any gender</option><option>Female</option><option>Male</option></select>
+            <button id="applyFilterBtn" class="small-glass">Filter</button>
+        </div>
+        <div id="matchQueue" style="background:rgba(0,0,0,0.3); border-radius:28px; padding:12px; margin-top:12px;">
+            <h3 style="color:white;">People who liked you (last 5)</h3>
+            <div id="pendingLikesList"></div>
+        </div>
+        <div id="exploreList" class="explore-grid"></div>
+    </div>
+    <div id="messagesView" class="view">
+        <div style="padding: 12px 16px; background: rgba(0,0,0,0.3); border-radius: 32px 32px 0 0; text-align: center;">
+            <h3 style="color:white; margin:0;">MEET</h3>
+        </div>
+        <div id="chatListContainer" class="chat-list-container"></div>
+        <div id="chatScreenContainer" class="chat-screen-container" style="display:none;"></div>
+    </div>
+    <div id="profileView" class="view">
+        <div class="glass-card" style="padding:20px;">
+            <div style="text-align:right;"><i class="fas fa-cog" id="openSettingsBtn" style="font-size:1.5rem; color:white; cursor:pointer;"></i></div>
+            <div class="profile-top">
+                <div style="position:relative; display:inline-block;">
+                    <img id="profileAvatar" class="profile-pic-large" src="">
+                    <div class="camera-overlay" id="changePhotoBtn"><i class="fas fa-camera"></i></div>
+                    <input type="file" id="photoUploadInput" style="display:none;" accept="image/*">
+                </div>
+                <h2 style="color:white; margin-top:8px;"><span id="profileUsername"></span><i class="fas fa-check-circle verified-badge" style="display:none;"></i></h2>
+                <p id="profileStatus" style="color:#ccc;"></p>
+                <div class="last-seen-preview" id="lastSeenPreview"></div>
+                <div class="progress-bar"><div class="progress-fill" id="profileProgress"></div></div>
+                <div class="stats-row">
+                    <div><strong id="matchesCount">0</strong><br>Matches</div>
+                    <div><strong id="likesCount">0</strong><br>Likes</div>
+                    <div><strong id="viewsCount">0</strong><br>Views</div>
+                </div>
+                <div class="action-buttons-row">
+                    <button id="editProfileBtn"><i class="fas fa-edit"></i> Edit Profile</button>
+                    <button id="shareProfileBtn"><i class="fas fa-share-alt"></i> Share</button>
+                    <button id="boostProfileBtn"><i class="fas fa-rocket"></i> Boost</button>
+                </div>
+            </div>
+            <div class="settings-list" id="settingsListContainer"></div>
+            <button id="logoutBtnProfile" style="background:rgba(255,80,80,0.5); border:none; border-radius:60px; padding:12px; width:100%; margin-top:20px; color:white;">Logout</button>
+        </div>
+    </div>
+    <div id="editProfileView" class="view" style="display:none;">
+        <div class="glass-card" style="padding:20px;">
+            <div class="back-header"><button id="backFromEdit"><i class="fas fa-arrow-left"></i></button><h2 style="color:white;">Edit Profile</h2></div>
+            <div class="edit-profile-form">
+                <div class="photo-grid" id="photoGrid"></div>
+                <input type="text" id="editName" placeholder="Name">
+                <textarea id="editBio" rows="2" placeholder="Bio"></textarea>
+                <select id="editGender"><option>Female</option><option>Male</option></select>
+                <input type="number" id="editAge" placeholder="Age">
+                <input type="text" id="editLocation" placeholder="Location">
+                <label style="color:white;">Interests (add tags):</label>
+                <div class="interests-tag-input" id="interestsContainer"></div>
+                <input type="text" id="newInterestInput" placeholder="Type interest and press Enter" style="margin-top:4px;">
+                <label style="color:white;">Looking for:</label>
+                <select id="editIntent"><option>Serious</option><option>Casual</option><option>Friends</option></select>
+                <label style="color:white;">Video/voice intro:</label>
+                <input type="file" id="introUploadInput" accept="video/*,audio/*">
+                <button id="uploadIntroBtn" class="small-glass">Upload intro</button>
+                <div id="introPreview"></div>
+                <button id="saveProfileChanges" class="gradient-btn" style="margin-top:16px;">Save Changes</button>
+            </div>
+        </div>
+    </div>
+    <div id="settingsDetailView" class="view" style="display:none;">
+        <div class="glass-card" style="padding:20px;">
+            <div class="back-header"><button id="backFromSettings"><i class="fas fa-arrow-left"></i></button><h2 id="settingsTitle" style="color:white;">Settings</h2></div>
+            <div id="settingsDetailContent"></div>
+        </div>
+    </div>
+    <div class="bottom-nav">
+        <div class="nav-item" data-nav="swipe"><i class="fas fa-fire"></i><span>Swipe</span></div>
+        <div class="nav-item" data-nav="explore"><i class="fas fa-compass"></i><span>Explore</span></div>
+        <div class="nav-item" data-nav="messages"><i class="fas fa-comment-dots"></i><span>Chats</span></div>
+        <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i><span>Profile</span></div>
+    </div>
 </div>
 
 <script type="module">
@@ -288,9 +417,18 @@
         });
     }
 
-    // ========== AUTH (full, with email verification) ==========
+    // ========== AUTH (with ban check) ==========
     window.signupUser = async (email, password, name, age, gender) => {
         try {
+            // Check if email is already banned? We'll check on login, but for signup we can also check if a banned account exists with this email.
+            const existingQuery = query(collection(db, "users"), where("email", "==", email));
+            const existingSnap = await getDocs(existingQuery);
+            if (!existingSnap.empty) {
+                const existingUser = existingSnap.docs[0].data();
+                if (existingUser.banned === true) {
+                    throw new Error("This email is banned from MEET.");
+                }
+            }
             const userCred = await createUserWithEmailAndPassword(auth, email, password);
             await updateProfile(userCred.user, { displayName: name });
             await sendEmailVerification(userCred.user);
@@ -310,6 +448,7 @@
             return userCred.user;
         } catch (err) { await customAlert(err.message, "Signup Error"); throw err; }
     };
+
     window.signInWithGoogle = async () => {
         try {
             const result = await signInWithPopup(auth, googleProvider);
@@ -329,15 +468,27 @@
                     verified: false, intent: "Serious", introUrl: "", banned: false
                 });
             } else {
+                const userData = userDoc.data();
+                if (userData.banned === true) {
+                    await signOut(auth);
+                    throw new Error("Your account has been banned.");
+                }
                 await updateDoc(doc(db, "users", user.uid), { lastSeen: Date.now(), emailVerified: true });
             }
             return user;
         } catch (err) { await customAlert(err.message, "Google Sign-In Error"); throw err; }
     };
+
     window.loginUserFirebase = async (email, password) => {
         try {
             const userCred = await signInWithEmailAndPassword(auth, email, password);
             if (!userCred.user.emailVerified) { await customAlert("Please verify your email.", "Email Not Verified"); await signOut(auth); throw new Error("Email not verified"); }
+            const userDoc = await getDoc(doc(db, "users", userCred.user.uid));
+            const userData = userDoc.data();
+            if (userData && userData.banned === true) {
+                await signOut(auth);
+                throw new Error("Your account has been banned.");
+            }
             await updateDoc(doc(db, "users", userCred.user.uid), { lastSeen: Date.now(), emailVerified: true });
             return userCred.user;
         } catch (err) { throw err; }
@@ -392,12 +543,18 @@
         };
         modal.querySelector('#closeEventsModal').onclick = () => modal.remove();
     }
+
     async function uploadIntro(file) {
         const introRef = ref(storage, `intros/${currentUser.uid}/${Date.now()}_${file.name}`);
         await uploadBytes(introRef, file); const url = await getDownloadURL(introRef);
         await updateDoc(doc(db, "users", currentUser.uid), { introUrl: url }); await customAlert("Intro uploaded!", "Success");
     }
-    async function submitAppeal(reason) { await addDoc(collection(db, "appeals"), { userId: currentUser.uid, reason, status: "pending", timestamp: Date.now() }); await customAlert("Appeal submitted.", "Appeal"); }
+
+    async function submitAppeal(reason) {
+        await addDoc(collection(db, "appeals"), { userId: currentUser.uid, reason, status: "pending", timestamp: Date.now() });
+        await customAlert("Appeal submitted.", "Appeal");
+    }
+
     let isAdminLoggedIn = false;
     async function renderAdminPanel() {
         if (!isAdminLoggedIn) return;
@@ -411,42 +568,137 @@
             document.getElementById('profileView').querySelector('.glass-card').appendChild(div);
             return div;
         })();
-        adminDiv.innerHTML = `<h3>👑 Admin Panel</h3><div class="admin-stats" id="adminStats"></div><div class="admin-section"><h4>🚫 Banned Users</h4><div id="bannedList"></div></div><div class="admin-section"><h4>📢 Appeals</h4><div id="appealsList"></div></div><div class="admin-section"><h4>⚠️ Reports</h4><div id="reportsList"></div></div><button class="small-glass" id="adminLogoutBtn">Logout</button>`;
-        
+        adminDiv.innerHTML = `
+            <h3>👑 Admin Panel</h3>
+            <div class="admin-stats" id="adminStats"></div>
+            <div class="admin-section">
+                <h4>🔍 Ban User</h4>
+                <input type="text" id="banUserSearchInput" placeholder="Enter user email or name" style="width:100%; padding:8px; border-radius:20px; background:rgba(255,255,255,0.2); border:none; color:white; margin-bottom:8px;">
+                <button class="small-glass" id="searchUserForBanBtn">Search</button>
+                <div id="banUserSearchResults" style="margin-top:8px;"></div>
+            </div>
+            <div class="admin-section">
+                <h4>🚫 Banned Users</h4>
+                <div id="bannedList"></div>
+            </div>
+            <div class="admin-section">
+                <h4>📢 Appeals</h4>
+                <div id="appealsList"></div>
+            </div>
+            <div class="admin-section">
+                <h4>⚠️ Reports</h4>
+                <div id="reportsList"></div>
+            </div>
+            <button class="small-glass" id="adminLogoutBtn">Logout</button>
+        `;
+
+        // Ban user search functionality
+        document.getElementById('searchUserForBanBtn').addEventListener('click', async () => {
+            const searchTerm = document.getElementById('banUserSearchInput').value.trim().toLowerCase();
+            if (!searchTerm) return;
+            const usersSnap = await getDocs(collection(db, "users"));
+            const users = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+            const results = users.filter(u => 
+                u.email?.toLowerCase().includes(searchTerm) || 
+                u.name?.toLowerCase().includes(searchTerm)
+            ).slice(0, 10);
+            
+            const resultsDiv = document.getElementById('banUserSearchResults');
+            if (results.length === 0) {
+                resultsDiv.innerHTML = '<p style="color:#ccc;">No users found.</p>';
+                return;
+            }
+            resultsDiv.innerHTML = results.map(u => `
+                <div class="admin-item" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>${u.name} (${u.email}) ${u.banned ? '<span style="color:#ff6b6b;">[BANNED]</span>' : ''}</span>
+                    ${!u.banned ? `<button class="small-glass ban-user-btn" data-id="${u.id}" data-name="${u.name}">Ban</button>` : `<button class="small-glass unban-user-btn" data-id="${u.id}" data-name="${u.name}">Unban</button>`}
+                </div>
+            `).join('');
+            
+            document.querySelectorAll('.ban-user-btn').forEach(btn => btn.addEventListener('click', async () => {
+                const userId = btn.dataset.id;
+                const userName = btn.dataset.name;
+                if (await customConfirm(`Ban user ${userName}?`, "Confirm Ban")) {
+                    await updateDoc(doc(db, "users", userId), { banned: true });
+                    await customAlert(`User ${userName} has been banned.`, "Banned");
+                    renderAdminPanel(); // refresh
+                }
+            }));
+            document.querySelectorAll('.unban-user-btn').forEach(btn => btn.addEventListener('click', async () => {
+                const userId = btn.dataset.id;
+                const userName = btn.dataset.name;
+                if (await customConfirm(`Unban user ${userName}?`, "Confirm Unban")) {
+                    await updateDoc(doc(db, "users", userId), { banned: false });
+                    await customAlert(`User ${userName} has been unbanned.`, "Unbanned");
+                    renderAdminPanel();
+                }
+            }));
+        });
+
+        // Stats and banned list
         const usersQuery = query(collection(db, "users"));
         const unsubUsers = onSnapshot(usersQuery, (snap) => {
             const users = snap.docs.map(d => d.data());
             const totalUsers = users.length;
             const premiumUsers = users.filter(u => u.isPremium === true).length;
             const bannedUsers = users.filter(u => u.banned === true);
-            document.getElementById('adminStats').innerHTML = `<div class="stat-card">Total Users: ${totalUsers}</div><div class="stat-card">Premium: ${premiumUsers}</div><div class="stat-card">Banned: ${bannedUsers.length}</div>`;
-            document.getElementById('bannedList').innerHTML = bannedUsers.map(u => `<div class="admin-item">${u.name} (${u.email})</div>`).join('') || '<div class="admin-item">None</div>';
+            document.getElementById('adminStats').innerHTML = `
+                <div class="stat-card">Total Users: ${totalUsers}</div>
+                <div class="stat-card">Premium: ${premiumUsers}</div>
+                <div class="stat-card">Banned: ${bannedUsers.length}</div>
+            `;
+            document.getElementById('bannedList').innerHTML = bannedUsers.map(u => 
+                `<div class="admin-item">${u.name} (${u.email})</div>`
+            ).join('') || '<div class="admin-item">None</div>';
         });
         adminUnsubscribes.push(unsubUsers);
         
+        // Appeals and Reports (same as before)
         const appealsQuery = query(collection(db, "appeals"), orderBy("timestamp", "desc"));
         const unsubAppeals = onSnapshot(appealsQuery, (snap) => {
             const appeals = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            document.getElementById('appealsList').innerHTML = appeals.map(a => `<div class="admin-item"><strong>${a.userId}</strong>: ${a.reason} (${a.status})<br><button class="small-glass approve-appeal" data-id="${a.id}">Approve</button> <button class="small-glass reject-appeal" data-id="${a.id}">Reject</button></div>`).join('') || '<div class="admin-item">None</div>';
-            document.querySelectorAll('.approve-appeal').forEach(btn => btn.addEventListener('click', async () => { await updateDoc(doc(db, "appeals", btn.dataset.id), { status: "approved" }); }));
-            document.querySelectorAll('.reject-appeal').forEach(btn => btn.addEventListener('click', async () => { await updateDoc(doc(db, "appeals", btn.dataset.id), { status: "rejected" }); }));
+            document.getElementById('appealsList').innerHTML = appeals.map(a => `
+                <div class="admin-item">
+                    <strong>${a.userId}</strong>: ${a.reason} (${a.status})
+                    <br>
+                    <button class="small-glass approve-appeal" data-id="${a.id}">Approve</button>
+                    <button class="small-glass reject-appeal" data-id="${a.id}">Reject</button>
+                </div>
+            `).join('') || '<div class="admin-item">None</div>';
+            document.querySelectorAll('.approve-appeal').forEach(btn => btn.addEventListener('click', async () => {
+                const appealId = btn.dataset.id;
+                const appeal = appeals.find(a => a.id === appealId);
+                await updateDoc(doc(db, "appeals", appealId), { status: "approved" });
+                if (appeal) {
+                    await updateDoc(doc(db, "users", appeal.userId), { banned: false });
+                    await customAlert(`Appeal approved and user unbanned.`, "Appeal");
+                }
+            }));
+            document.querySelectorAll('.reject-appeal').forEach(btn => btn.addEventListener('click', async () => {
+                await updateDoc(doc(db, "appeals", btn.dataset.id), { status: "rejected" });
+            }));
         });
         adminUnsubscribes.push(unsubAppeals);
         
         const reportsQuery = query(collection(db, "reports"), orderBy("timestamp", "desc"));
         const unsubReports = onSnapshot(reportsQuery, (snap) => {
             const reports = snap.docs.map(d => d.data());
-            document.getElementById('reportsList').innerHTML = reports.map(r => `<div class="admin-item">Reported: ${r.reportedId} by ${r.reporterId} – Reason: ${r.reason}</div>`).join('') || '<div class="admin-item">None</div>';
+            document.getElementById('reportsList').innerHTML = reports.map(r => 
+                `<div class="admin-item">Reported: ${r.reportedId} by ${r.reporterId} – Reason: ${r.reason}</div>`
+            ).join('') || '<div class="admin-item">None</div>';
         });
         adminUnsubscribes.push(unsubReports);
         
-        document.getElementById('adminLogoutBtn').onclick = () => { isAdminLoggedIn = false; adminDiv.remove(); adminUnsubscribes.forEach(unsub => unsub()); };
+        document.getElementById('adminLogoutBtn').onclick = () => {
+            isAdminLoggedIn = false;
+            adminDiv.remove();
+            adminUnsubscribes.forEach(unsub => unsub());
+        };
     }
 
     // ========== CORE APP FUNCTIONS ==========
     async function getAvailableProfiles() {
         const users = await getDocs(collection(db, "users"));
-        // Return ALL users except self, already swiped, blocked, and banned
         return users.docs.map(d => d.data()).filter(u => 
             u.uid !== currentUser.uid && 
             !currentUser.swipes?.includes(u.uid) && 
@@ -487,7 +739,6 @@
             currentUser.swipes = swipes;
             currentUser.swipesToday = (currentUser.swipesToday || 0) + 1;
             
-            // Send real-time like notification
             await sendLikeNotification(currentUser.uid, target.uid, currentUser.name);
             
             if(target.swipes && target.swipes.includes(currentUser.uid)) {
@@ -938,7 +1189,7 @@
         renderChatList();
         startHeartbeat();
         await updateLastSeen();
-        listenForNotifications();  // Start listening for like notifications
+        listenForNotifications();
         window.addEventListener('beforeunload', async () => { if(currentUser) await updateDoc(doc(db,"users",currentUser.uid),{ lastSeen: 0 }); if(heartbeatInterval) clearInterval(heartbeatInterval); if(unsubscribeNotifications) unsubscribeNotifications(); });
     }
     async function startHeartbeat() { if(heartbeatInterval) clearInterval(heartbeatInterval); heartbeatInterval = setInterval(async () => { if(currentUser) await updateDoc(doc(db,"users",currentUser.uid),{ lastSeen: Date.now() }); }, 30000); }
@@ -950,6 +1201,26 @@
     document.getElementById('goToSignupLink')?.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('loginView').style.display = 'none'; document.getElementById('signupView').style.display = 'flex'; });
     document.getElementById('goToLoginLink')?.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('signupView').style.display = 'none'; document.getElementById('loginView').style.display = 'flex'; });
     document.getElementById('forgotPasswordBtn')?.addEventListener('click', async () => { const email = await customPrompt("Enter your email:", "", "Reset Password"); if(email) sendPasswordResetEmail(auth, email).then(()=>customAlert("Reset email sent", "Email")).catch(err=>customAlert(err.message, "Error")); });
+    document.getElementById('appealBanBtn')?.addEventListener('click', async () => {
+        const email = await customPrompt("Enter your email address:", "", "Appeal Ban");
+        if (!email) return;
+        const usersSnap = await getDocs(query(collection(db, "users"), where("email", "==", email)));
+        if (usersSnap.empty) {
+            await customAlert("No account found with that email.", "Not Found");
+            return;
+        }
+        const userDoc = usersSnap.docs[0];
+        const userData = userDoc.data();
+        if (!userData.banned) {
+            await customAlert("This account is not banned.", "Not Banned");
+            return;
+        }
+        const reason = await customPrompt("Please explain why you should be unbanned:", "", "Appeal Reason");
+        if (reason) {
+            await addDoc(collection(db, "appeals"), { userId: userDoc.id, reason, status: "pending", timestamp: Date.now() });
+            await customAlert("Your appeal has been submitted. We'll review it shortly.", "Appeal Submitted");
+        }
+    });
     document.getElementById('googleSignInBtn')?.addEventListener('click', async () => { try{ const user=await window.signInWithGoogle(); localStorage.setItem('currentUserUid',user.uid); currentUser=(await getDoc(doc(db,"users",user.uid))).data(); showMainApp(); }catch(err){ await customAlert(err.message, "Error"); } });
     document.getElementById('googleSignUpBtn')?.addEventListener('click', async () => { try{ const user=await window.signInWithGoogle(); localStorage.setItem('currentUserUid',user.uid); currentUser=(await getDoc(doc(db,"users",user.uid))).data(); showMainApp(); }catch(err){ await customAlert(err.message, "Error"); } });
     document.getElementById('signupFormElem')?.addEventListener('submit', async (e) => { e.preventDefault(); const name=document.getElementById('signupName').value, email=document.getElementById('signupEmail').value, pwd=document.getElementById('signupPassword').value, confirm=document.getElementById('confirmPwd').value; if(pwd!==confirm){ await customAlert("Passwords mismatch", "Error"); return; } const gender=document.getElementById('signupGender').value, age=document.getElementById('signupAge').value; try{ await window.signupUser(email,pwd,name,age,gender); document.getElementById('signupView').style.display='none'; document.getElementById('loginView').style.display='flex'; }catch(err){ await customAlert("Signup failed: "+err.message, "Error"); } });
