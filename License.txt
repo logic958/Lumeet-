@@ -1,4 +1,4 @@
-Copyright (c) 2026 Crain Sakala
+Copyright © 2026 Crain Sakala
 
 All rights reserved.
 
