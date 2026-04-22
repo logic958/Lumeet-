@@ -1,9 +1,0 @@
-{
-  "name": "MEET",
-  "short_name": "MEET",
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#ff4d6d",
-  "background_color": "#ffffff",
-  "icons": []
-}
